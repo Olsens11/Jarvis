@@ -1,7 +1,7 @@
 # test_code.py
 
 def main():
-    print("Hello, Raspberry man, give me some raspberries if you can")
+    print("Hello, this is the result of much effort.")
 
 if __name__ == "__main__":
     main()
