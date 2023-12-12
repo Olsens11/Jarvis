@@ -2,7 +2,6 @@ import time
 import board
 from digitalio import DigitalInOut, Direction, Pull
 from PIL import Image, ImageDraw, ImageFont
-import adafruit_ssd1306
 import textwrap
 
 # Set up the OLED Bonnet
@@ -83,7 +82,7 @@ while True:
     # Draw QWERTY keyboard on the top half of the screen if visible
     if keyboard_visible:
         for i, row in enumerate(qwerty_chars):
-            row_y = (i + 1) * (height // (len(qwerty_chars) + 1))
+            row_y = i * (height // (len(qwerty_chars) + 1))
             char_width = width // len(row)
             for j, char in enumerate(row):
                 char_x = j * char_width
@@ -103,13 +102,13 @@ while True:
 
     # Move the dot based on joystick input with accelerating speed
     if button_D_state:
-        dot_y -= min(1, dot_speed)
+        dot_y -= max(1, dot_speed)
     elif button_U_state:
-        dot_y += min(1, dot_speed)
+        dot_y += max(1, dot_speed)
     if button_R_state:
-        dot_x -= min(1, dot_speed)
+        dot_x -= max(1, dot_speed)
     elif button_L_state:
-        dot_x += min(1, dot_speed)
+        dot_x += max(1, dot_speed)
 
     # Wrap the dot to the opposite side when off-screen
     dot_x = dot_x % width
