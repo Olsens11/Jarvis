@@ -60,6 +60,9 @@ dot_y = height // 2
 dot_speed = 0.5
 acceleration = 0.1
 
+# Time tracking for speed doubling
+last_speed_increase_time = time.monotonic()
+
 while True:
     # Clear the image
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -103,20 +106,23 @@ while True:
 
     # Move the dot based on joystick input with variable speed
     if button_D_state:
-        dot_y -= dot_speed
+        dot_y -= min(1, dot_speed)
     elif button_U_state:
-        dot_y += dot_speed
+        dot_y += min(1, dot_speed)
     if button_R_state:
-        dot_x -= dot_speed
+        dot_x -= min(1, dot_speed)
     elif button_L_state:
-        dot_x += dot_speed
+        dot_x += min(1, dot_speed)
 
     # Wrap the dot to the opposite side when off-screen
     dot_x = dot_x % width
     dot_y = dot_y % height
 
     # Increase dot speed smoothly over time
-    dot_speed += acceleration
+    current_time = time.monotonic()
+    if current_time - last_speed_increase_time >= 2:
+        dot_speed *= 2  # Double the speed
+        last_speed_increase_time = current_time
 
     # Draw a dot on the image using paste() to achieve smooth movement
     dot_image = Image.new("1", (4, 4), 0)
