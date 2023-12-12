@@ -20,16 +20,19 @@ draw = ImageDraw.Draw(image)
 font = ImageFont.load_default()
 
 # Initialize button states
-button_a_state = False
-button_b_state = False
+button_a = digitalio.DigitalInOut(board.D5)
+button_a.switch_to_input(pull=digitalio.Pull.UP)
+
+button_b = digitalio.DigitalInOut(board.D6)
+button_b.switch_to_input(pull=digitalio.Pull.UP)
 
 while True:
     # Clear the display
     oled.fill(0)
 
     # Check button states
-    button_a_state = not digitalio.DigitalInOut(board.D5).value
-    button_b_state = not digitalio.DigitalInOut(board.D6).value
+    button_a_state = not button_a.value
+    button_b_state = not button_b.value
 
     # Determine text based on button states
     if button_a_state and button_b_state:
