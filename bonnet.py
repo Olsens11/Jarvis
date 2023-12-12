@@ -56,13 +56,13 @@ while True:
     if button_U_state and button_D_state and not button_L_state and not button_R_state and not button_C_state:
         text = "Center"
     elif button_U_state and not button_D_state and not button_L_state and not button_R_state and not button_C_state:
-        text = "Up"
-    elif not button_U_state and button_D_state and not button_L_state and not button_R_state and not button_C_state:
         text = "Down"
+    elif not button_U_state and button_D_state and not button_L_state and not button_R_state and not button_C_state:
+        text = "Up"
     elif not button_U_state and not button_D_state and button_L_state and not button_R_state and not button_C_state:
-        text = "Left"
-    elif not button_U_state and not button_D_state and not button_L_state and button_R_state and not button_C_state:
         text = "Right"
+    elif not button_U_state and not button_D_state and not button_L_state and button_R_state and not button_C_state:
+        text = "Left"
     elif not button_U_state and not button_D_state and not button_L_state and not button_R_state and button_C_state:
         text = "Center Button Pressed"
     else:
