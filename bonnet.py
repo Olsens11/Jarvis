@@ -1,85 +1,48 @@
-import board
-import busio
-from digitalio import DigitalInOut, Direction, Pull
-from PIL import Image, ImageDraw, ImageFont
 import subprocess
-import threading
-import adafruit_ssd1306
+import time
+import Adafruit_SSD1306
 
-# Set up the OLED Bonnet
-reset_pin = DigitalInOut(board.D4)
-i2c = board.I2C()
-oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin)
+# Set up the display
+disp = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=0x3C)
 
-# Create blank image for drawing.
-width = oled.width
-height = oled.height
-image = Image.new("1", (width, height))
-draw = ImageDraw.Draw(image)
+# Initialize the display.
+disp.begin()
 
-# Fixed font size
-font_size = 12
-font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
+# Clear the display.
+disp.clear()
+disp.display()
 
-# Button pin mappings
-button_pins = {
-    "U": board.D17,
-    "L": board.D27,
-    "R": board.D23,
-    "D": board.D22,
-    "C": board.D4,
-}
+# Function to get the most recent terminal output
+def get_recent_output():
+    try:
+        # Run the command to get the terminal output
+        result = subprocess.check_output(['bash', '-c', 'history 1'], universal_newlines=True)
+        return result.strip()
+    except Exception as e:
+        return str(e)
 
-# Set up buttons
-buttons = {button: DigitalInOut(pin) for button, pin in button_pins.items()}
-for button in buttons.values():
-    button.direction = Direction.INPUT
-    button.pull = Pull.UP
-
-# Function to display the terminal output
-def display_terminal_output():
+# Main loop
+try:
     while True:
-        draw.rectangle((0, 0, width, height), outline=0, fill=0)
+        # Get the most recent terminal output
+        terminal_output = get_recent_output()
 
-        try:
-            # Read the content of the file containing terminal output
-            with open("terminal_output.txt", "r") as file:
-                terminal_output = file.read()
+        # Clear the display
+        disp.clear()
 
-            # Display the terminal output on the OLED screen
-            draw.text((0, 0), terminal_output, font=font, fill=1)
-        except Exception as e:
-            # If there's an exception, print the error message
-            error_message = str(e)
-            draw.text((0, 0), f"Error: {error_message}", font=font, fill=1)
+        # Draw the text on the display
+        disp.draw_text(0, 0, terminal_output)
 
-        oled.image(image.rotate(180))
-        oled.show()
+        # Display the text
+        disp.display()
 
+        # Wait for a few seconds before updating again
+        time.sleep(5)
 
-# Start the thread to display terminal output
-thread = threading.Thread(target=display_terminal_output)
-thread.start()
-
-while True:
-    # Check button presses
-    for button, button_pin in buttons.items():
-        if not button_pin.value:
-            # Button is pressed
-            if button == "U":
-                # Simulate user typing a command
-                command = input("Enter command: ")
-                # Write the command to the file
-                with open("terminal_output.txt", "a") as file:
-                    file.write(f"$ {command}\n")
-                # Execute the command and append the output to the file
-                subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                with open("terminal_output.txt", "a") as file:
-                    file.write("Command executed.\n")
-            elif button == "C":
-                # Clear the terminal output file
-                with open("terminal_output.txt", "w") as file:
-                    file.write("")
-
-# Wait for the display thread to finish
-thread.join()
+except KeyboardInterrupt:
+    # Handle Ctrl+C gracefully
+    pass
+finally:
+    # Clear the display on exit
+    disp.clear()
+    disp.display()
