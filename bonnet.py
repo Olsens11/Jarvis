@@ -47,4 +47,14 @@ while True:
     elif button_b_state:
         text = "Button B pressed"
     else:
-    
+        text = "No buttons pressed"
+
+    # Draw text on the image
+    draw.text((10 + (joystick_x_value - min_x) // 100, 10 + (joystick_y_value - min_y) // 100), text, font=font, fill=1)
+
+    # Rotate the image 180 degrees before displaying
+    rotated_image = image.rotate(180)
+
+    # Display the rotated image on the OLED
+    oled.image(rotated_image)
+    oled.show()
