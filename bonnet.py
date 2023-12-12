@@ -56,6 +56,10 @@ button_B.pull = Pull.UP
 dot_x = width // 2
 dot_y = height // 2
 
+# Initial speed and acceleration
+dot_speed = 2
+acceleration = 0.1
+
 while True:
     # Clear the image
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -98,7 +102,6 @@ while True:
     draw.text((text_x, text_y), wrapped_text, font=font, fill=1)
 
     # Move the dot based on joystick input with variable speed
-    dot_speed = 2 + min(time.monotonic(), 10) // 2  # Increase speed after 10 seconds
     if button_D_state:
         dot_y -= dot_speed
     elif button_U_state:
@@ -112,6 +115,9 @@ while True:
     dot_x = dot_x % width
     dot_y = dot_y % height
 
+    # Increase dot speed smoothly over time
+    dot_speed += acceleration
+
     # Draw a dot on the image
     draw.ellipse((dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2), outline=1, fill=1)
 
@@ -121,3 +127,6 @@ while True:
     # Display the rotated image on the OLED
     oled.image(rotated_image)
     oled.show()
+
+    # Pause for a short duration to control the speed of the loop
+    time.sleep(0.05)
