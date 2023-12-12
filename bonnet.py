@@ -74,17 +74,21 @@ qwerty_chars = [
 # Selected text
 selected_text = ""
 
+# Flag to toggle keyboard visibility
+keyboard_visible = True
+
 while True:
     # Clear the image
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-    # Draw QWERTY keyboard on the top half of the screen
-    for i, row in enumerate(qwerty_chars):
-        row_y = i * (height // len(qwerty_chars))
-        char_width = width // len(row)
-        for j, char in enumerate(row):
-            char_x = j * char_width
-            draw.text((char_x, row_y), char, font=font, fill=1)
+    # Draw QWERTY keyboard on the top half of the screen if visible
+    if keyboard_visible:
+        for i, row in enumerate(qwerty_chars):
+            row_y = i * (height // len(qwerty_chars))
+            char_width = width // len(row)
+            for j, char in enumerate(row):
+                char_x = j * char_width
+                draw.text((char_x, row_y), char, font=font, fill=1)
 
     # Draw selected text on the bottom half of the screen
     draw.text((0, height // 2), selected_text, font=font, fill=1)
@@ -131,19 +135,24 @@ while True:
     dot_draw.ellipse((0, 0, 4, 4), outline=1, fill=1)
     image.paste(dot_image, (int(dot_x) - 2, int(dot_y) - 2))
 
-    # Check if the center button is pressed to select a character
+    # Check if the center button is pressed to select a character or add a line break
     if button_C_state:
-        selected_row = min(int(dot_y / (height / len(qwerty_chars))), len(qwerty_chars) - 1)
-        selected_col = min(int(dot_x / (width / len(qwerty_chars[selected_row]))), len(qwerty_chars[selected_row]) - 1)
-        selected_char = qwerty_chars[selected_row][selected_col]
-        selected_text += selected_char
+        if keyboard_visible:
+            selected_row = min(int(dot_y / (height / len(qwerty_chars))), len(qwerty_chars) - 1)
+            selected_col = min(int(dot_x / (width / len(qwerty_chars[selected_row]))), len(qwerty_chars[selected_row]) - 1)
+            selected_char = qwerty_chars[selected_row][selected_col]
+            selected_text += selected_char
+        else:
+            selected_text += "\n"  # Add a line break
 
-    # Rotate the image 180 degrees before displaying
+    # Toggle keyboard visibility using A and B buttons
+    if button_A_state:
+        keyboard_visible = not keyboard_visible
+
+    # Rotate the image 180 degrees for proper display
     rotated_image = image.rotate(180)
-
-    # Display the rotated image on the OLED
     oled.image(rotated_image)
     oled.show()
 
-    # Pause for a short duration to control the speed of the loop
+    # Pause briefly to avoid flickering
     time.sleep(0.05)
