@@ -1,3 +1,4 @@
+import time
 import board
 from digitalio import DigitalInOut, Direction, Pull
 from PIL import Image, ImageDraw, ImageFont
@@ -96,11 +97,8 @@ while True:
     # Draw wrapped text on the image
     draw.text((text_x, text_y), wrapped_text, font=font, fill=1)
 
-    # Draw a dot on the image
-    draw.ellipse((dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2), outline=1, fill=1)
-
-    # Move the dot based on joystick input
-    dot_speed = 2
+    # Move the dot based on joystick input with variable speed
+    dot_speed = 2 + min(time.monotonic(), 10) // 2  # Increase speed after 10 seconds
     if button_D_state:
         dot_y -= dot_speed
     elif button_U_state:
@@ -109,6 +107,13 @@ while True:
         dot_x -= dot_speed
     elif button_L_state:
         dot_x += dot_speed
+
+    # Wrap the dot to the opposite side when off-screen
+    dot_x = dot_x % width
+    dot_y = dot_y % height
+
+    # Draw a dot on the image
+    draw.ellipse((dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2), outline=1, fill=1)
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)

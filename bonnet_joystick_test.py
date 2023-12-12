@@ -22,7 +22,7 @@ draw = ImageDraw.Draw(image)
 font_size = 12
 font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
 
-# Initialize buttons for joystick
+# Initialize buttons for joystick, A, and B
 button_U = DigitalInOut(board.D17)
 button_U.direction = Direction.INPUT
 button_U.pull = Pull.UP
@@ -43,30 +43,48 @@ button_C = DigitalInOut(board.D4)
 button_C.direction = Direction.INPUT
 button_C.pull = Pull.UP
 
+button_A = DigitalInOut(board.D5)
+button_A.direction = Direction.INPUT
+button_A.pull = Pull.UP
+
+button_B = DigitalInOut(board.D6)
+button_B.direction = Direction.INPUT
+button_B.pull = Pull.UP
+
+# Initial dot position
+dot_x = width // 2
+dot_y = height // 2
+
 while True:
     # Clear the image
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-    # Read joystick button states
+    # Read joystick and button states
     button_U_state = not button_U.value
     button_L_state = not button_L.value
     button_R_state = not button_R.value
     button_D_state = not button_D.value
     button_C_state = not button_C.value
+    button_A_state = not button_A.value
+    button_B_state = not button_B.value
 
-    # Draw text based on joystick button states
-    if button_U_state and not button_D_state:
+    # Draw text based on joystick and button states
+    if button_D_state and not button_U_state:
         text = "Up"
-    elif not button_U_state and button_D_state:
-        text = "Down"
-    elif button_L_state and not button_R_state:
+    elif button_R_state and not button_L_state:
         text = "Left"
-    elif not button_L_state and button_R_state:
+    elif button_L_state and not button_R_state:
         text = "Right"
+    elif button_U_state and not button_D_state:
+        text = "Down"
     elif not button_U_state and not button_D_state and not button_L_state and not button_R_state and button_C_state:
         text = "Center Button Pressed"
+    elif button_A_state:
+        text = "A Button Pressed"
+    elif button_B_state:
+        text = "B Button Pressed"
     else:
-        text = "No Joystick Button Pressed"
+        text = "No Joystick or Button Pressed"
 
     # Wrap text to fit within the screen width
     wrapped_text = textwrap.fill(text, width=16)
@@ -77,6 +95,20 @@ while True:
 
     # Draw wrapped text on the image
     draw.text((text_x, text_y), wrapped_text, font=font, fill=1)
+
+    # Draw a dot on the image
+    draw.ellipse((dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2), outline=1, fill=1)
+
+    # Move the dot based on joystick input
+    dot_speed = 2
+    if button_D_state:
+        dot_y -= dot_speed
+    elif button_U_state:
+        dot_y += dot_speed
+    if button_R_state:
+        dot_x -= dot_speed
+    elif button_L_state:
+        dot_x += dot_speed
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)
