@@ -61,7 +61,7 @@ dot_speed = 0.5
 acceleration = 0.02
 
 # Time tracking for speed increase
-last_speed_increase_time = time.monotonic()
+start_time = None
 
 while True:
     # Clear the image
@@ -118,11 +118,18 @@ while True:
     dot_x = dot_x % width
     dot_y = dot_y % height
 
+    # Check if the button is pressed, and record the start time
+    if button_D_state or button_U_state or button_R_state or button_L_state:
+        if start_time is None:
+            start_time = time.monotonic()
+    else:
+        start_time = None
+
     # Increase dot speed smoothly over time
     current_time = time.monotonic()
-    if current_time - last_speed_increase_time >= 2:
+    if start_time is not None and current_time - start_time >= 2:
         dot_speed += acceleration  # Increase acceleration
-        last_speed_increase_time = current_time
+        start_time = None
 
     # Draw a dot on the image using paste() to achieve smooth movement
     dot_image = Image.new("1", (4, 4), 0)
