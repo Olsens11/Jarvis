@@ -69,7 +69,7 @@ while True:
         text = "No Joystick Button Pressed"
 
     # Calculate the position to center the text within the screen
-    text_width, text_height = draw.textsize(text, font)
+    text_width, text_height = draw.textbbox((0, 0), text, font=font)
     x = (width - text_width) // 2
     y = (height - text_height) // 2
 
