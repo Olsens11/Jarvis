@@ -57,7 +57,7 @@ dot_x = width // 2
 dot_y = height // 2
 
 # Initial speed and acceleration
-dot_speed = 2
+dot_speed = 0.5
 acceleration = 0.1
 
 while True:
