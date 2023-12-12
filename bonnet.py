@@ -41,21 +41,18 @@ while True:
     # Read joystick button state
     button_U_state = not button_U.value
 
-    # Move the dot based on joystick input with accelerating speed
+    # Increase dot speed smoothly over time
+    current_time = time.monotonic()
     if button_U_state:
-        dot_y -= min(1, dot_speed)
-
-        # Check if the button is pressed, and record the start time
         if start_time is None:
-            start_time = time.monotonic()
+            start_time = current_time
+        elapsed_time = current_time - start_time
+        dot_speed = 0.5 + acceleration * elapsed_time
     else:
         start_time = None
 
-    # Increase dot speed smoothly over time
-    current_time = time.monotonic()
-    if start_time is not None and current_time - start_time >= 2:
-        dot_speed += acceleration  # Increase acceleration
-        start_time = None
+    # Move the dot based on joystick input with accelerating speed
+    dot_y -= min(1, dot_speed)
 
     # Wrap the dot to the opposite side when off-screen
     dot_y = dot_y % height
