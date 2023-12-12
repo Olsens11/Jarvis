@@ -41,14 +41,21 @@ def display_terminal_output():
     while True:
         draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-        # Read the content of the file containing terminal output
-        with open("terminal_output.txt", "r") as file:
-            terminal_output = file.read()
+        try:
+            # Read the content of the file containing terminal output
+            with open("terminal_output.txt", "r") as file:
+                terminal_output = file.read()
 
-        # Display the terminal output on the OLED screen
-        draw.text((0, 0), terminal_output, font=font, fill=1)
+            # Display the terminal output on the OLED screen
+            draw.text((0, 0), terminal_output, font=font, fill=1)
+        except Exception as e:
+            # If there's an exception, print the error message
+            error_message = str(e)
+            draw.text((0, 0), f"Error: {error_message}", font=font, fill=1)
+
         oled.image(image.rotate(180))
         oled.show()
+
 
 # Start the thread to display terminal output
 thread = threading.Thread(target=display_terminal_output)
