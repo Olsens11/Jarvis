@@ -3,6 +3,23 @@ from digitalio import DigitalInOut, Direction, Pull
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 
+def wrap_text(draw, text, font, max_width):
+    lines = []
+    words = text.split()
+    current_line = words[0]
+    
+    for word in words[1:]:
+        test_line = current_line + " " + word
+        width, _ = draw.textbbox((0, 0), test_line, font=font)[2:]
+        if width <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word
+
+    lines.append(current_line)
+    return lines
+
 # Set up the OLED Bonnet
 reset_pin = DigitalInOut(board.D4)
 i2c = board.I2C()
@@ -67,20 +84,17 @@ while True:
     else:
         text = "No Joystick Button Pressed"
 
-    # Check if text exceeds screen boundaries
-    text_width, text_height = draw.textbbox((0, 0), text, font=font)[2:]
-    if text_width > width:
-        # Reduce font size if text is too wide
-        font_size -= 1
-        font = ImageFont.load_default()  # Reload font with the new size
-        text_width, text_height = draw.textbbox((0, 0), text, font=font)[2:]
+    # Wrap text if it exceeds screen width
+    wrapped_text = wrap_text(draw, text, font, width)
 
-    # Calculate the position to center the text within the screen
-    text_x = max(0, min((width - text_width) // 2, width - text_width))
+    # Calculate the position to center the wrapped text within the screen
+    text_height = len(wrapped_text) * font.getsize(wrapped_text[0])[1]
     text_y = max(0, min(height - text_height - 2, height - text_height))
 
-    # Draw text on the image
-    draw.text((text_x, text_y), text, font=font, fill=1)
+    # Draw wrapped text on the image
+    for i, line in enumerate(wrapped_text):
+        text_x = max(0, min((width - draw.textbbox((0, 0), line, font=font)[2]) // 2, width - draw.textbbox((0, 0), line, font=font)[2]))
+        draw.text((text_x, text_y + i * font.getsize(line)[1]), line, font=font, fill=1)
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)
