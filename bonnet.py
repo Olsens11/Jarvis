@@ -1,6 +1,7 @@
 import board
 import digitalio
 import evdev
+import adafruit_ssd1306
 from PIL import Image, ImageDraw, ImageFont
 
 # Set up the OLED Bonnet
