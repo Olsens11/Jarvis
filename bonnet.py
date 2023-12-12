@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 # Set up the OLED Bonnet
 reset_pin = digitalio.DigitalInOut(board.D4)
 i2c = board.I2C()
-oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin, transform='flipy')
+oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin)
 
 # Create an image with a black background
 image = Image.new("1", (oled.width, oled.height), 0)
@@ -43,6 +43,9 @@ while True:
     # Draw text on the image
     draw.text((10, 10), text, font=font, fill=1)
 
-    # Display the image on the OLED
-    oled.image(image)
+    # Rotate the image 180 degrees before displaying
+    rotated_image = image.rotate(180)
+
+    # Display the rotated image on the OLED
+    oled.image(rotated_image)
     oled.show()
