@@ -2,23 +2,7 @@ import board
 from digitalio import DigitalInOut, Direction, Pull
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
-
-def wrap_text(draw, text, font, max_width):
-    lines = []
-    words = text.split()
-    current_line = words[0]
-    
-    for word in words[1:]:
-        test_line = current_line + " " + word
-        width, _ = draw.textbbox((0, 0), test_line, font=font)[2:]
-        if width <= max_width:
-            current_line = test_line
-        else:
-            lines.append(current_line)
-            current_line = word
-
-    lines.append(current_line)
-    return lines
+import textwrap
 
 # Set up the OLED Bonnet
 reset_pin = DigitalInOut(board.D4)
@@ -34,9 +18,9 @@ image = Image.new("1", (width, height))
 # Get drawing object to draw on the image.
 draw = ImageDraw.Draw(image)
 
-# Load a font with an initial size
-font_size = 8
-font = ImageFont.load_default()
+# Fixed font size
+font_size = 12
+font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
 
 # Initialize buttons for joystick
 button_U = DigitalInOut(board.D17)
@@ -84,17 +68,15 @@ while True:
     else:
         text = "No Joystick Button Pressed"
 
-    # Wrap text if it exceeds screen width
-    wrapped_text = wrap_text(draw, text, font, width)
+    # Wrap text to fit within the screen width
+    wrapped_text = textwrap.fill(text, width=16)
 
-    # Calculate the position to center the wrapped text within the screen
-    text_height = len(wrapped_text) * font.getsize(wrapped_text[0])[1]
-    text_y = max(0, min(height - text_height - 2, height - text_height))
+    # Calculate the position to center the text within the screen
+    text_x = (width - draw.textbbox((0, 0), wrapped_text, font=font)[2]) // 2
+    text_y = (height - draw.textbbox((0, 0), wrapped_text, font=font)[3]) // 2
 
     # Draw wrapped text on the image
-    for i, line in enumerate(wrapped_text):
-        text_x = max(0, min((width - draw.textbbox((0, 0), line, font=font)[2]) // 2, width - draw.textbbox((0, 0), line, font=font)[2]))
-        draw.text((text_x, text_y + i * font.getsize(line)[1]), line, font=font, fill=1)
+    draw.text((text_x, text_y), wrapped_text, font=font, fill=1)
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)
