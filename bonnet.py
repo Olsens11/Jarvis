@@ -27,9 +27,18 @@ while True:
     button_a_state = not digitalio.DigitalInOut(board.D5).value
     button_b_state = not digitalio.DigitalInOut(board.D6).value
 
-    # Draw button states on the image
-    draw.text((10, 10), f"Button A: {'Pressed' if button_a_state else 'Released'}", font=font, fill=1)
-    draw.text((10, 30), f"Button B: {'Pressed' if button_b_state else 'Released'}", font=font, fill=1)
+    # Determine text based on button states
+    if button_a_state and button_b_state:
+        text = "Both buttons pressed"
+    elif button_a_state:
+        text = "Button A pressed"
+    elif button_b_state:
+        text = "Button B pressed"
+    else:
+        text = "No buttons pressed"
+
+    # Draw text on the image
+    draw.text((10, 10), text, font=font, fill=1)
 
     # Display the image on the OLED
     oled.image(image)
