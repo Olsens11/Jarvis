@@ -69,14 +69,14 @@ while True:
     button_B_state = not button_B.value
 
     # Draw text based on joystick and button states
-    if button_U_state and not button_D_state:
+    if button_D_state and not button_U_state:
         text = "Up"
-    elif not button_U_state and button_D_state:
-        text = "Down"
-    elif button_L_state and not button_R_state:
+    elif button_R_state and not button_L_state:
         text = "Left"
-    elif not button_L_state and button_R_state:
+    elif button_L_state and not button_R_state:
         text = "Right"
+    elif button_U_state and not button_D_state:
+        text = "Down"
     elif not button_U_state and not button_D_state and not button_L_state and not button_R_state and button_C_state:
         text = "Center Button Pressed"
     elif button_A_state:
@@ -101,13 +101,13 @@ while True:
 
     # Move the dot based on joystick input
     dot_speed = 2
-    if button_U_state:
+    if button_D_state:
         dot_y -= dot_speed
-    elif button_D_state:
+    elif button_U_state:
         dot_y += dot_speed
-    if button_L_state:
+    if button_R_state:
         dot_x -= dot_speed
-    elif button_R_state:
+    elif button_L_state:
         dot_x += dot_speed
 
     # Rotate the image 180 degrees before displaying
