@@ -4,6 +4,10 @@ original_dir=$(pwd)
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
+# Commit changes
+git add --all
+git commit -m "Automated commit before pull"
+
 # Pull changes from the "main" branch
 git pull origin main
 
