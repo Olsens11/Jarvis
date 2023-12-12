@@ -118,8 +118,11 @@ while True:
     # Increase dot speed smoothly over time
     dot_speed += acceleration
 
-    # Draw a dot on the image
-    draw.ellipse((dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2), outline=1, fill=1)
+    # Draw a dot on the image using paste() to achieve smooth movement
+    dot_image = Image.new("1", (4, 4), 0)
+    dot_draw = ImageDraw.Draw(dot_image)
+    dot_draw.ellipse((0, 0, 4, 4), outline=1, fill=1)
+    image.paste(dot_image, (int(dot_x) - 2, int(dot_y) - 2))
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)
