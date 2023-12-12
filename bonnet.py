@@ -24,8 +24,8 @@ button_b = digitalio.DigitalInOut(board.D6)
 button_b.switch_to_input(pull=digitalio.Pull.UP)
 
 # Calibrate joystick values based on your specific joystick
-min_x, max_x = 0, 1023
-min_y, max_y = 0, 1023
+min_x, max_x = 0, 65535  # Adjust these values as needed
+min_y, max_y = 0, 65535
 
 while True:
     # Clear the image
@@ -36,8 +36,8 @@ while True:
     button_b_state = not button_b.value
 
     # Read joystick values
-    joystick_x_value = analogio.read(board.JOYSTICK_X)
-    joystick_y_value = analogio.read(board.JOYSTICK_Y)
+    joystick_x_value = board.JOYSTICK_X
+    joystick_y_value = board.JOYSTICK_Y
 
     # Determine text based on button states
     if button_a_state and button_b_state:
