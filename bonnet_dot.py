@@ -17,8 +17,7 @@ image = Image.new("1", (width, height))
 # Get drawing object to draw on the image.
 draw = ImageDraw.Draw(image)
 
-# Load a font with an initial size
-font_size = 8
+# Load a font
 font = ImageFont.load_default()
 
 # Initialize buttons for joystick
@@ -42,6 +41,9 @@ button_C = DigitalInOut(board.D4)
 button_C.direction = Direction.INPUT
 button_C.pull = Pull.UP
 
+# Initial dot position
+dot_x, dot_y = width // 2, height // 2
+
 while True:
     # Clear the image
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -53,33 +55,25 @@ while True:
     button_D_state = not button_D.value
     button_C_state = not button_C.value
 
-    # Draw text based on joystick button states
+    # Update dot position based on joystick input
     if button_U_state and not button_D_state:
-        text = "Up"
+        dot_y -= 1
     elif not button_U_state and button_D_state:
-        text = "Down"
-    elif button_L_state and not button_R_state:
-        text = "Left"
+        dot_y += 1
+
+    if button_L_state and not button_R_state:
+        dot_x -= 1
     elif not button_L_state and button_R_state:
-        text = "Right"
-    elif not button_U_state and not button_D_state and not button_L_state and not button_R_state and button_C_state:
-        text = "Center Button Pressed"
-    else:
-        text = "No Joystick Button Pressed"
+        dot_x += 1
 
-    # Check if text exceeds screen boundaries
+    # Draw the dot
+    draw.point((dot_x, dot_y), fill=1)
+
+    # Draw text displaying dot coordinates
+    text = f"Dot Position: ({dot_x}, {dot_y})"
     text_width, text_height = draw.textbbox((0, 0), text, font=font)[2:]
-    if text_width > width:
-        # Reduce font size if text is too wide
-        font_size -= 1
-        font = ImageFont.load_default()  # Reload font with the new size
-        text_width, text_height = draw.textbbox((0, 0), text, font=font)[2:]
-
-    # Calculate the position to center the text within the screen
-    text_x = max(0, min((width - text_width) // 2, width - text_width))
-    text_y = max(0, min(height - text_height - 2, height - text_height))
-
-    # Draw text on the image
+    text_x = (width - text_width) // 2
+    text_y = height - text_height - 2
     draw.text((text_x, text_y), text, font=font, fill=1)
 
     # Rotate the image 180 degrees before displaying
