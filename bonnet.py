@@ -65,7 +65,6 @@ start_time = None
 
 # QWERTY keyboard characters
 qwerty_chars = [
-    "1234567890",
     "qwertyuiop",
     "asdfghjkl",
     "zxcvbnm",
@@ -84,14 +83,14 @@ while True:
     # Draw QWERTY keyboard on the top half of the screen if visible
     if keyboard_visible:
         for i, row in enumerate(qwerty_chars):
-            row_y = i * (height // len(qwerty_chars))
+            row_y = (i + 1) * (height // (len(qwerty_chars) + 1))
             char_width = width // len(row)
             for j, char in enumerate(row):
                 char_x = j * char_width
                 draw.text((char_x, row_y), char, font=font, fill=1)
 
-    # Draw selected text on the bottom half of the screen
-    draw.text((0, height // 2), selected_text, font=font, fill=1)
+    # Draw selected text at the very bottom of the screen
+    draw.text((0, height - font_size - 2), selected_text, font=font, fill=1)
 
     # Read joystick and button states
     button_U_state = not button_U.value
@@ -138,7 +137,7 @@ while True:
     # Check if the center button is pressed to select a character or add a line break
     if button_C_state:
         if keyboard_visible:
-            selected_row = min(int(dot_y / (height / len(qwerty_chars))), len(qwerty_chars) - 1)
+            selected_row = min(int(dot_y / (height / (len(qwerty_chars) + 1))), len(qwerty_chars) - 1)
             selected_col = min(int(dot_x / (width / len(qwerty_chars[selected_row]))), len(qwerty_chars[selected_row]) - 1)
             selected_char = qwerty_chars[selected_row][selected_col]
             selected_text += selected_char
