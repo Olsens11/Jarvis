@@ -1,60 +1,112 @@
+# SPDX-FileCopyrightText: 2017 James DeVito for Adafruit Industries
+# SPDX-License-Identifier: MIT
+
+# This example is for use on (Linux) computers that are using CPython with
+# Adafruit Blinka to support CircuitPython libraries. CircuitPython does
+# not support PIL/pillow (python imaging library)!
+
 import board
-import digitalio
-import evdev
+import busio
+from digitalio import DigitalInOut, Direction, Pull
+from PIL import Image, ImageDraw
 import adafruit_ssd1306
-from PIL import Image, ImageDraw, ImageFont
 
-# Set up the OLED Bonnet
-reset_pin = digitalio.DigitalInOut(board.D4)
-i2c = board.I2C()
-oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin)
+# Create the I2C interface.
+i2c = busio.I2C(board.SCL, board.SDA)
+# Create the SSD1306 OLED class.
+disp = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c)
 
-# Create an image with a black background
-image = Image.new("1", (oled.width, oled.height), 0)
+
+# Input pins:
+button_A = DigitalInOut(board.D5)
+button_A.direction = Direction.INPUT
+button_A.pull = Pull.UP
+
+button_B = DigitalInOut(board.D6)
+button_B.direction = Direction.INPUT
+button_B.pull = Pull.UP
+
+button_L = DigitalInOut(board.D27)
+button_L.direction = Direction.INPUT
+button_L.pull = Pull.UP
+
+button_R = DigitalInOut(board.D23)
+button_R.direction = Direction.INPUT
+button_R.pull = Pull.UP
+
+button_U = DigitalInOut(board.D17)
+button_U.direction = Direction.INPUT
+button_U.pull = Pull.UP
+
+button_D = DigitalInOut(board.D22)
+button_D.direction = Direction.INPUT
+button_D.pull = Pull.UP
+
+button_C = DigitalInOut(board.D4)
+button_C.direction = Direction.INPUT
+button_C.pull = Pull.UP
+
+
+# Clear display.
+disp.fill(0)
+disp.show()
+
+# Create blank image for drawing.
+# Make sure to create image with mode '1' for 1-bit color.
+width = disp.width
+height = disp.height
+image = Image.new("1", (width, height))
+
+# Get drawing object to draw on image.
 draw = ImageDraw.Draw(image)
 
-# Load a font
-font = ImageFont.load_default()
+# Draw a black filled box to clear the image.
+draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-# Initialize buttons
-button_a = digitalio.DigitalInOut(board.D5)
-button_a.switch_to_input(pull=digitalio.Pull.UP)
-
-button_b = digitalio.DigitalInOut(board.D6)
-button_b.switch_to_input(pull=digitalio.Pull.UP)
-
-# Calibrate joystick values based on your specific joystick
-min_x, max_x = 0, 65535  # Adjust these values as needed
-min_y, max_y = 0, 65535
 
 while True:
-    # Clear the image
-    draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
+    if button_U.value:  # button is released
+        draw.polygon([(20, 20), (30, 2), (40, 20)], outline=255, fill=0)  # Up
+    else:  # button is pressed:
+        draw.polygon([(20, 20), (30, 2), (40, 20)], outline=255, fill=1)  # Up filled
 
-    # Read button states
-    button_a_state = not button_a.value
-    button_b_state = not button_b.value
+    if button_L.value:  # button is released
+        draw.polygon([(0, 30), (18, 21), (18, 41)], outline=255, fill=0)  # left
+    else:  # button is pressed:
+        draw.polygon([(0, 30), (18, 21), (18, 41)], outline=255, fill=1)  # left filled
 
-    # Read joystick values
-    joystick_x_value = board.JOYSTICK_X
-    joystick_y_value = board.JOYSTICK_Y
+    if button_R.value:  # button is released
+        draw.polygon([(60, 30), (42, 21), (42, 41)], outline=255, fill=0)  # right
+    else:  # button is pressed:
+        draw.polygon(
+            [(60, 30), (42, 21), (42, 41)], outline=255, fill=1
+        )  # right filled
 
-    # Determine text based on button states
-    if button_a_state and button_b_state:
-        text = "Both buttons pressed"
-    elif button_a_state:
-        text = "Button A pressed"
-    elif button_b_state:
-        text = "Button B pressed"
+    if button_D.value:  # button is released
+        draw.polygon([(30, 60), (40, 42), (20, 42)], outline=255, fill=0)  # down
+    else:  # button is pressed:
+        draw.polygon([(30, 60), (40, 42), (20, 42)], outline=255, fill=1)  # down filled
+
+    if button_C.value:  # button is released
+        draw.rectangle((20, 22, 40, 40), outline=255, fill=0)  # center
+    else:  # button is pressed:
+        draw.rectangle((20, 22, 40, 40), outline=255, fill=1)  # center filled
+
+    if button_A.value:  # button is released
+        draw.ellipse((70, 40, 90, 60), outline=255, fill=0)  # A button
+    else:  # button is pressed:
+        draw.ellipse((70, 40, 90, 60), outline=255, fill=1)  # A button filled
+
+    if button_B.value:  # button is released
+        draw.ellipse((100, 20, 120, 40), outline=255, fill=0)  # B button
+    else:  # button is pressed:
+        draw.ellipse((100, 20, 120, 40), outline=255, fill=1)  # B button filled
+
+    if not button_A.value and not button_B.value and not button_C.value:
+        catImage = Image.open("happycat_oled_64.ppm").convert("1")
+        disp.image(catImage)
     else:
-        text = "No buttons pressed"
+        # Display image.
+        disp.image(image)
 
-    # Draw text on the image
-    draw.text((10 + (joystick_x_value - min_x) // 100, 10 + (joystick_y_value - min_y) // 100), text, font=font, fill=1)
-
-    # Rotate the image 180 degrees before displaying
-    rotated_image = image.rotate(180)
-
-    # Display the rotated image on the OLED
-    oled.image(rotated_image)
-    oled.show()
+    disp.show()
