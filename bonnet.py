@@ -2,7 +2,6 @@ import time
 import board
 from digitalio import DigitalInOut, Direction, Pull
 from PIL import Image, ImageDraw, ImageFont
-import textwrap
 import adafruit_ssd1306
 
 
@@ -58,8 +57,8 @@ dot_x = width // 2
 dot_y = height // 2
 
 # Initial speed and acceleration
-dot_speed = 0.5
-acceleration = 0.02
+dot_speed = 2.0
+acceleration = 0.05
 
 # Time tracking for speed increase
 start_time = None
