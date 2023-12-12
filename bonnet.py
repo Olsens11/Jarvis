@@ -19,6 +19,10 @@ draw = ImageDraw.Draw(image)
 # Load a font
 font = ImageFont.load_default()
 
+# Initialize button states
+button_a_state = False
+button_b_state = False
+
 while True:
     # Clear the display
     oled.fill(0)
