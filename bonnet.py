@@ -23,11 +23,16 @@ button_a.switch_to_input(pull=digitalio.Pull.UP)
 button_b = digitalio.DigitalInOut(board.D6)
 button_b.switch_to_input(pull=digitalio.Pull.UP)
 
-# Find the joystick input event
+# Find and print the names of available devices
 devices = [evdev.InputDevice(fn) for fn in evdev.list_devices()]
+for device in devices:
+    print(f"Found device: {device.name} ({device.phys})")
+
+# Identify the correct joystick device based on the printed names
+joystick_name = "your_joystick_name_here"  # Replace with the correct name
 joystick = None
 for device in devices:
-    if "joystick" in device.name.lower():
+    if joystick_name.lower() in device.name.lower():
         joystick = device
         break
 
