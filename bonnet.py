@@ -19,7 +19,7 @@ draw = ImageDraw.Draw(image)
 # Load a font
 font = ImageFont.load_default()
 
-# Initialize button states
+# Initialize buttons
 button_a = digitalio.DigitalInOut(board.D5)
 button_a.switch_to_input(pull=digitalio.Pull.UP)
 
@@ -30,7 +30,7 @@ while True:
     # Clear the display
     oled.fill(0)
 
-    # Check button states
+    # Read button states
     button_a_state = not button_a.value
     button_b_state = not button_b.value
 
