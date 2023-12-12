@@ -1,6 +1,6 @@
 import board
 from digitalio import DigitalInOut, Direction, Pull
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 
 # Set up the OLED Bonnet
@@ -16,6 +16,9 @@ image = Image.new("1", (width, height))
 
 # Get drawing object to draw on the image.
 draw = ImageDraw.Draw(image)
+
+# Load a font
+font = ImageFont.load_default()
 
 # Initialize buttons for joystick
 button_U = DigitalInOut(board.D17)
@@ -37,10 +40,6 @@ button_D.pull = Pull.UP
 button_C = DigitalInOut(board.D4)
 button_C.direction = Direction.INPUT
 button_C.pull = Pull.UP
-
-# Calibrate joystick values based on your specific joystick
-min_x, max_x = 0, 65535  # Adjust these values as needed
-min_y, max_y = 0, 65535
 
 while True:
     # Clear the image
@@ -70,7 +69,7 @@ while True:
         text = "No Joystick Button Pressed"
 
     # Draw text on the image
-    draw.text((10 + (joystick_x_value - min_x) // 100, 10 + (joystick_y_value - min_y) // 100), text, font=font, fill=1)
+    draw.text((10, 10), text, font=font, fill=1)
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)
