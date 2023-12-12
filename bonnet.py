@@ -69,17 +69,6 @@ while True:
         text = "No Joystick Button Pressed"
 
     # Calculate the position to center the text within the screen
-    text_bbox = draw.textbbox((0, 0), text, font=font)
-    text_width, text_height = text_bbox[2] - text_bbox[0], text_bbox[3] - text_bbox[1]
+    text_width, text_height = draw.textbbox((0, 0), text, font=font)[2:]
     x = (width - text_width) // 2
-    y = (height - text_height) // 2
-
-    # Draw text on the image
-    draw.text((x, y), text, font=font, fill=1)
-
-    # Rotate the image 180 degrees before displaying
-    rotated_image = image.rotate(180)
-
-    # Display the rotated image on the OLED
-    oled.image(rotated_image)
-    oled.show()
+    y = (height - text_heigh
