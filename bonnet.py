@@ -47,7 +47,7 @@ while True:
     button_b_state = not button_b.value
 
     # Read joystick values
-    for event in joystick.read_loop():
+    for event in joystick.read():
         if event.type == evdev.ecodes.EV_ABS:
             if event.code == evdev.ecodes.ABS_X:
                 joystick_x_value = event.value
