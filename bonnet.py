@@ -3,7 +3,7 @@ import busio
 from digitalio import DigitalInOut, Direction, Pull
 from PIL import Image, ImageDraw, ImageFont
 import subprocess
-import adafruit_ssd1306
+import threading
 
 # Set up the OLED Bonnet
 reset_pin = DigitalInOut(board.D4)
@@ -20,13 +20,6 @@ draw = ImageDraw.Draw(image)
 font_size = 12
 font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
 
-# Menu options and corresponding commands
-menu_options = {
-    "Option 1": "ls",
-    "Option 2": "df -h",
-    "Option 3": "uname -a",
-}
-
 # Button pin mappings
 button_pins = {
     "U": board.D17,
@@ -42,46 +35,43 @@ for button in buttons.values():
     button.direction = Direction.INPUT
     button.pull = Pull.UP
 
-# Function to display the menu
-def display_menu():
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-    draw.text((0, 0), "Menu Options:", font=font, fill=1)
-    for i, (option, _) in enumerate(menu_options.items(), start=1):
-        draw.text((0, i * font_size), f"{i}. {option}", font=font, fill=1)
-    oled.image(image.rotate(180))
-    oled.show()
+# Function to display the terminal output
+def display_terminal_output():
+    while True:
+        draw.rectangle((0, 0, width, height), outline=0, fill=0)
+
+        # Read the content of the file containing terminal output
+        with open("terminal_output.txt", "r") as file:
+            terminal_output = file.read()
+
+        # Display the terminal output on the OLED screen
+        draw.text((0, 0), terminal_output, font=font, fill=1)
+        oled.image(image.rotate(180))
+        oled.show()
+
+# Start the thread to display terminal output
+thread = threading.Thread(target=display_terminal_output)
+thread.start()
 
 while True:
-    # Display the menu
-    display_menu()
+    # Check button presses
+    for button, button_pin in buttons.items():
+        if not button_pin.value:
+            # Button is pressed
+            if button == "U":
+                # Simulate user typing a command
+                command = input("Enter command: ")
+                # Write the command to the file
+                with open("terminal_output.txt", "a") as file:
+                    file.write(f"$ {command}\n")
+                # Execute the command and append the output to the file
+                subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                with open("terminal_output.txt", "a") as file:
+                    file.write("Command executed.\n")
+            elif button == "C":
+                # Clear the terminal output file
+                with open("terminal_output.txt", "w") as file:
+                    file.write("")
 
-    # Wait for a button press to select an option
-    selected_option = None
-    while selected_option is None:
-        for button, button_pin in buttons.items():
-            if not button_pin.value:
-                # Button is pressed
-                if button == "U":
-                    # Move up in the menu
-                    display_menu()
-                elif button == "D":
-                    # Move down in the menu
-                    display_menu()
-                elif button == "C":
-                    # Select the current option
-                    selected_option = list(menu_options.keys())[current_option - 1]
-                    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-                    draw.text((0, 0), f"Selected: {selected_option}", font=font, fill=1)
-                    oled.image(image.rotate(180))
-                    oled.show()
-
-    # Execute the selected command
-    command = menu_options[selected_option]
-    output = subprocess.check_output(command, shell=True).decode("utf-8")
-
-    # Display the output on the OLED screen
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-    draw.text((0, 0), f"Selected: {selected_option}", font=font, fill=1)
-    draw.text((0, font_size), output, font=font, fill=1)
-    oled.image(image.rotate(180))
-    oled.show()
+# Wait for the display thread to finish
+thread.join()
