@@ -1,6 +1,5 @@
 import board
 import digitalio
-import analogio
 import adafruit_ssd1306
 from PIL import Image, ImageDraw, ImageFont
 
@@ -23,10 +22,6 @@ button_a.switch_to_input(pull=digitalio.Pull.UP)
 button_b = digitalio.DigitalInOut(board.D6)
 button_b.switch_to_input(pull=digitalio.Pull.UP)
 
-# Initialize joystick
-joystick_x = analogio.AnalogIn(board.A2)
-joystick_y = analogio.AnalogIn(board.A3)
-
 while True:
     # Clear the image
     draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
@@ -34,10 +29,6 @@ while True:
     # Read button states
     button_a_state = not button_a.value
     button_b_state = not button_b.value
-
-    # Read joystick values
-    joystick_x_value = joystick_x.value
-    joystick_y_value = joystick_y.value
 
     # Determine text based on button states
     if button_a_state and button_b_state:
@@ -50,7 +41,7 @@ while True:
         text = "No buttons pressed"
 
     # Draw text on the image
-    draw.text((10 + joystick_x_value // 100, 10 + joystick_y_value // 100), text, font=font, fill=1)
+    draw.text((10, 10), text, font=font, fill=1)
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)
