@@ -23,22 +23,6 @@ button_a.switch_to_input(pull=digitalio.Pull.UP)
 button_b = digitalio.DigitalInOut(board.D6)
 button_b.switch_to_input(pull=digitalio.Pull.UP)
 
-# Find and print the names of available devices
-devices = [evdev.InputDevice(fn) for fn in evdev.list_devices()]
-for device in devices:
-    print(f"Found device: {device.name} ({device.phys})")
-
-# Identify the correct joystick device based on the printed names
-joystick_name = "your_joystick_name_here"  # Replace with the correct name
-joystick = None
-for device in devices:
-    if joystick_name.lower() in device.name.lower():
-        joystick = device
-        break
-
-if joystick is None:
-    raise RuntimeError("Joystick not found")
-
 # Calibrate joystick values based on your specific joystick
 min_x, max_x = 0, 1023
 min_y, max_y = 0, 1023
@@ -52,12 +36,8 @@ while True:
     button_b_state = not button_b.value
 
     # Read joystick values
-    for event in joystick.read():
-        if event.type == evdev.ecodes.EV_ABS:
-            if event.code == evdev.ecodes.ABS_X:
-                joystick_x_value = event.value
-            elif event.code == evdev.ecodes.ABS_Y:
-                joystick_y_value = event.value
+    joystick_x_value = analogio.read(board.JOYSTICK_X)
+    joystick_y_value = analogio.read(board.JOYSTICK_Y)
 
     # Determine text based on button states
     if button_a_state and button_b_state:
@@ -67,14 +47,4 @@ while True:
     elif button_b_state:
         text = "Button B pressed"
     else:
-        text = "No buttons pressed"
-
-    # Draw text on the image
-    draw.text((10 + (joystick_x_value - min_x) // 100, 10 + (joystick_y_value - min_y) // 100), text, font=font, fill=1)
-
-    # Rotate the image 180 degrees before displaying
-    rotated_image = image.rotate(180)
-
-    # Display the rotated image on the OLED
-    oled.image(rotated_image)
-    oled.show()
+    
