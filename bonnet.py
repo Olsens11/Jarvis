@@ -1,7 +1,8 @@
-import subprocess
 import board
+import busio
 from digitalio import DigitalInOut, Direction, Pull
 from PIL import Image, ImageDraw, ImageFont
+import subprocess
 import adafruit_ssd1306
 
 # Set up the OLED Bonnet
@@ -19,23 +20,68 @@ draw = ImageDraw.Draw(image)
 font_size = 12
 font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
 
-# Terminal command to execute
-terminal_command = "ls -l"
+# Menu options and corresponding commands
+menu_options = {
+    "Option 1": "ls",
+    "Option 2": "df -h",
+    "Option 3": "uname -a",
+}
+
+# Button pin mappings
+button_pins = {
+    "U": board.D17,
+    "L": board.D27,
+    "R": board.D23,
+    "D": board.D22,
+    "C": board.D4,
+}
+
+# Set up buttons
+buttons = {button: DigitalInOut(pin) for button, pin in button_pins.items()}
+for button in buttons.values():
+    button.direction = Direction.INPUT
+    button.pull = Pull.UP
+
+# Function to display the menu
+def display_menu():
+    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+    draw.text((0, 0), "Menu Options:", font=font, fill=1)
+    for i, (option, _) in enumerate(menu_options.items(), start=1):
+        draw.text((0, i * font_size), f"{i}. {option}", font=font, fill=1)
+    oled.image(image.rotate(180))
+    oled.show()
 
 while True:
-    # Clear the image
+    # Display the menu
+    display_menu()
+
+    # Wait for a button press to select an option
+    selected_option = None
+    while selected_option is None:
+        for button, button_pin in buttons.items():
+            if not button_pin.value:
+                # Button is pressed
+                if button == "U":
+                    # Move up in the menu
+                    display_menu()
+                elif button == "D":
+                    # Move down in the menu
+                    display_menu()
+                elif button == "C":
+                    # Select the current option
+                    selected_option = list(menu_options.keys())[current_option - 1]
+                    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+                    draw.text((0, 0), f"Selected: {selected_option}", font=font, fill=1)
+                    oled.image(image.rotate(180))
+                    oled.show()
+
+    # Execute the selected command
+    command = menu_options[selected_option]
+    output = subprocess.check_output(command, shell=True).decode("utf-8")
+
+    # Display the output on the OLED screen
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
-
-    # Run terminal command and capture the output
-    terminal_output = subprocess.check_output(terminal_command, shell=True)
-    terminal_output = terminal_output.decode("utf-8")
-
-    # Display the terminal output on the screen
-    lines = terminal_output.splitlines()
-    for i, line in enumerate(lines):
-        draw.text((0, i * font_size), line, font=font, fill=1)
-
-    # Display the image on the OLED screen
-    rotated_image = image.rotate(180)
-    oled.image(rotated_image)
+    draw.text((0, 0), f"Selected: {selected_option}", font=font, fill=1)
+    draw.text((0, font_size), output, font=font, fill=1)
+    oled.image(image.rotate(180))
     oled.show()
