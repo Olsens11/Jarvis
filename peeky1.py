@@ -65,18 +65,6 @@ word_widths = [24, 30, 30]
 def get_displayed_files(directory):
     return os.listdir(directory)
 
-def can_navigate_up(selected_index):
-    return selected_index >= 3
-
-def can_navigate_down(selected_index, num_files):
-    return selected_index < 3 + num_files
-
-def can_navigate_left(selected_index):
-    return selected_index != 0 and selected_index != 2
-
-def can_navigate_right(selected_index):
-    return selected_index != 1 and selected_index != 2
-
 # Main loop
 while True:
     # Clear the image
@@ -92,20 +80,32 @@ while True:
     button_C_state = not button_C.value
 
     # Update selected index based on directional buttons
-    if button_U_state and can_navigate_up(selected_index):
-        selected_index = (selected_index - 1) % (3 + len(os.listdir(current_path)))
+    if button_U_state:
+        if selected_index == 2 or selected_index > 2:
+            selected_index = (selected_index - 1) % (3 + len(os.listdir(current_path)))
         while not button_U.value:  # Wait until button is released
             pass
-    elif button_D_state and can_navigate_down(selected_index, len(os.listdir(current_path))):
-        selected_index = (selected_index + 1) % (3 + len(os.listdir(current_path)))
+    elif button_D_state:
+        if selected_index > 2:
+            selected_index = (selected_index + 1) % (3 + len(os.listdir(current_path)))
         while not button_D.value:  # Wait until button is released
             pass
-    elif button_L_state and can_navigate_left(selected_index):
-        selected_index = (selected_index + 1) % (3 + len(os.listdir(current_path)))  # Adjusted for left
+    elif button_L_state:
+        if selected_index == 0:  # Back rectangle selected
+            selected_index = 1  # Move to Faves
+        elif selected_index == 1:  # Faves rectangle selected
+            selected_index = 0  # Move to Back
+        elif selected_index == 2:  # Setup rectangle selected
+            selected_index = 1  # Move to Faves
         while not button_L.value:  # Wait until button is released
             pass
-    elif button_R_state and can_navigate_right(selected_index):
-        selected_index = (selected_index - 1) % (3 + len(os.listdir(current_path)))  # Adjusted for right
+    elif button_R_state:
+        if selected_index == 0:  # Back rectangle selected
+            selected_index = 2  # Move to Setup
+        elif selected_index == 1:  # Faves rectangle selected
+            selected_index = 2  # Move to Setup
+        elif selected_index == 2:  # Setup rectangle selected
+            selected_index = 0  # Move to Back
         while not button_R.value:  # Wait until button is released
             pass
 
