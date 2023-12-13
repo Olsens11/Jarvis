@@ -30,9 +30,9 @@ button_L.switch_to_input(pull=digitalio.Pull.UP)
 
 # Rectangles configuration
 rect_width = 40  # Adjusted width
-rect_height = 12  # Adjusted height
+rect_height = 20  # Adjusted height
 rect_margin_x = 1  # Adjusted margin
-rect_margin_y = 2  # Adjusted margin
+rect_margin_y = 1  # Adjusted margin
 
 # Initial selected rectangle index
 selected_index = 0
@@ -76,7 +76,7 @@ while True:
         # Draw the text
         text = ["Back", "Favorites", "Settings"][i]
         text_x = x + rect_margin_x
-        text_y = y + rect_margin_y
+        text_y = y + rect_margin_y - 1  # Adjusted text position
         draw.text((text_x, text_y), text, font=font, fill=0 if is_selected else 1)
 
     # Rotate the image 180 degrees before displaying
