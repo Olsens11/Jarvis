@@ -51,10 +51,11 @@ button_C.pull = Pull.UP
 # Load font
 font = ImageFont.load_default()  # Use the default font
 
-# Function to display text on OLED
+# Function to display text on OLED using ImageDraw
 def display_text(text, color=WHITE):
     oled.fill(0)
-    oled.text(text, 0, 0, color)
+    draw = ImageDraw.Draw(oled.image)
+    draw.text((0, 0), text, font=font, fill=color)
     oled.show()
 
 # Function to browse and display files in a directory
