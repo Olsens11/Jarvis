@@ -19,89 +19,15 @@ MAX_FILE_NAME_LENGTH = 16  # Adjust based on your preference
 i2c = busio.I2C(board.SCL, board.SDA)
 oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c)
 
-# Input pins:
-button_A = DigitalInOut(board.D5)
-button_A.direction = Direction.INPUT
-button_A.pull = Pull.UP
-
-button_B = DigitalInOut(board.D6)
-button_B.direction = Direction.INPUT
-button_B.pull = Pull.UP
-
-button_L = DigitalInOut(board.D27)
-button_L.direction = Direction.INPUT
-button_L.pull = Pull.UP
-
-button_R = DigitalInOut(board.D23)
-button_R.direction = Direction.INPUT
-button_R.pull = Pull.UP
-
-button_U = DigitalInOut(board.D17)
-button_U.direction = Direction.INPUT
-button_U.pull = Pull.UP
-
-button_D = DigitalInOut(board.D22)
-button_D.direction = Direction.INPUT
-button_D.pull = Pull.UP
-
-button_C = DigitalInOut(board.D4)
-button_C.direction = Direction.INPUT
-button_C.pull = Pull.UP
-
 # Load font
 font = ImageFont.load_default()  # Use the default font
 
-# Function to display text on OLED
+# Function to display text on OLED using ImageDraw
 def display_text(text, color=WHITE):
-    try:
-        oled.fill(0)
-        x = 0
-        y = 0
-        for char in text:
-            oled.text(char, x, y, color)
-            x += FONT_SIZE  # Adjust the spacing based on your preference
-            if x >= DISPLAY_WIDTH:
-                x = 0
-                y += FONT_SIZE + 2  # Adjust the vertical spacing based on your preference
-        oled.show()
-    except Exception as e:
-        print(f"Exception during display_text: {e}")
-
-# Function to display menu options
-def display_menu(options, selected_index):
-    try:
-        oled.fill(0)
-        for i, option in enumerate(options):
-            y = i * (FONT_SIZE + 2)
-            if i == selected_index:
-                oled.rect(0, y, DISPLAY_WIDTH, y + FONT_SIZE + 2, WHITE)
-                display_text(option, BLACK)
-            else:
-                display_text(option, WHITE)
-        oled.show()
-    except Exception as e:
-        print(f"Exception during display_menu: {e}")
-
-# Function to handle file/folder selection
-def select_item(items, selected_index):
-    return items[selected_index]
-
-# Function to display and handle favorites screen
-def display_favorites(favorites, selected_index):
-    try:
-        display_menu(favorites, selected_index)
-        # Handle user input and add to favorites logic here
-    except Exception as e:
-        print(f"Exception during display_favorites: {e}")
-
-# Function to display and handle settings screen
-def display_settings(selected_index):
-    try:
-        settings = ["Invert Black/White", "Rotate Screen", "Close Program"]
-        display_menu(settings, selected_index)
-        # Handle user input and settings logic here
-    except Exception as e:
-        print(f"Exception during display_settings: {e}")
+    oled.fill(0)
+    draw = ImageDraw.Draw(oled.image)
+    draw.text((0, 0), text, font=font, fill=color)
+    oled.show()
 
 # Function to browse and display files in a directory
 def browse_directory(path):
@@ -115,37 +41,51 @@ def browse_directory(path):
 # Main program
 current_path = "/"
 selected_index = 0
-favorites = []
+
+# Initialize buttons
+button_A = DigitalInOut(board.D5)
+button_A.direction = Direction.INPUT
+button_A.pull = Pull.UP
+
+button_B = DigitalInOut(board.D6)
+button_B.direction = Direction.INPUT
+button_B.pull = Pull.UP
 
 while True:
     try:
         current_items = browse_directory(current_path)
 
-        # Display top menu
-        menu_options = ["Back", "Favorites", "Settings"]
-        display_menu(menu_options, selected_index)
+        # Read button states
+        button_A_state = not button_A.value
+        button_B_state = not button_B.value
 
-        # Display file/folder names
-        display_menu(current_items, selected_index)
+        # Determine text based on button states
+        if button_A_state and button_B_state:
+            text = "Both buttons pressed"
+        elif button_A_state:
+            text = "Button A pressed"
+        elif button_B_state:
+            text = "Button B pressed"
+        else:
+            # Display file/folder names
+            text = current_items[selected_index]
+
+        # Display text on OLED
+        display_text(text, WHITE)
 
         # Handle user input
-        if not button_U.value:
+        if not button_A.value:
             selected_index = max(0, selected_index - 1)
             time.sleep(0.2)  # Debounce
-        elif not button_D.value:
+        elif not button_B.value:
             selected_index = min(len(current_items) - 1, selected_index + 1)
             time.sleep(0.2)  # Debounce
-        elif not button_C.value:
+        elif button_A.value and button_B.value:
             if selected_index == 0:  # Back
                 current_path = os.path.dirname(current_path)
-            elif selected_index == 1:  # Favorites
-                display_favorites(favorites, 0)
-            elif selected_index == 2:  # Settings
-                display_settings(0)
             time.sleep(0.2)  # Debounce
+
     except Exception as e:
         print(f"Main loop exception: {e}")
-
-    # Add additional input handling logic for button_A, button_B, etc.
 
     time.sleep(0.1)  # Adjust sleep duration as needed
