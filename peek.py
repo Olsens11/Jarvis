@@ -54,14 +54,14 @@ font = ImageFont.truetype(font_path, FONT_SIZE)
 # Function to display text on OLED
 def display_text(text, color=WHITE):
     oled.fill(0)
-    draw = ImageDraw.Draw(oled)
+    draw = ImageDraw.Draw(oled.display)
     draw.text((0, 0), text, font=font, fill=color)
     oled.show()
 
 # Function to display menu options
 def display_menu(options, selected_index):
     oled.fill(0)
-    draw = ImageDraw.Draw(oled)
+    draw = ImageDraw.Draw(oled.display)
     for i, option in enumerate(options):
         if i == selected_index:
             draw.rectangle((0, i * (FONT_SIZE + 2), DISPLAY_WIDTH, i * (FONT_SIZE + 2) + FONT_SIZE + 2), outline=WHITE, fill=WHITE)
