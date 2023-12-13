@@ -5,27 +5,15 @@ import busio
 from digitalio import DigitalInOut, Direction, Pull
 from PIL import Image, ImageFont
 import adafruit_ssd1306
-import urllib.request
+from font5x8 import font_data  # Import the font data
 
 # Constants
 WHITE = 1
 BLACK = 0
 DISPLAY_WIDTH = 128
 DISPLAY_HEIGHT = 64
-FONT_SIZE = 10
+FONT_SIZE = 8  # Change this value as needed
 MAX_FILE_NAME_LENGTH = 16  # Adjust based on your preference
-
-# Load font
-font_path = "font5x8.bin"
-if not os.path.exists(font_path):
-    print("Downloading font5x8.bin...")
-    font_url = "https://raw.githubusercontent.com/adafruit/Adafruit_CircuitPython_framebuf/main/fonts/font5x8.bin"
-    try:
-        urllib.request.urlretrieve(font_url, font_path)
-        print("Font downloaded successfully.")
-    except urllib.error.HTTPError as e:
-        print(f"Error downloading font: {e}")
-        exit()
 
 # Initialize I2C and OLED display
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -59,6 +47,9 @@ button_D.pull = Pull.UP
 button_C = DigitalInOut(board.D4)
 button_C.direction = Direction.INPUT
 button_C.pull = Pull.UP
+
+# Load font
+font = ImageFont.load_data(font_data, FONT_SIZE)
 
 # Function to display text on OLED
 def display_text(text, color=WHITE):
