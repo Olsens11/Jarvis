@@ -3,7 +3,7 @@ import time
 import board
 import busio
 from digitalio import DigitalInOut, Direction, Pull
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageFont
 import adafruit_ssd1306
 from font5x8 import font_data  # Import the font data
 
@@ -51,11 +51,10 @@ button_C.pull = Pull.UP
 # Load font
 font = ImageFont.load_default()  # Use the default font
 
-# Function to display text on OLED using ImageDraw
+# Function to display text on OLED
 def display_text(text, color=WHITE):
     oled.fill(0)
-    draw = ImageDraw.Draw(oled.image)
-    draw.text((0, 0), text, font=font, fill=color)
+    oled.text(text, 0, 0, color)
     oled.show()
 
 # Function to browse and display files in a directory
