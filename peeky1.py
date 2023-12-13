@@ -96,7 +96,7 @@ while True:
 
     # Handle center button press
     if button_C_state:
-        if selected_index == 0:  # Back rectangle selected
+        if selected_index == 0 or selected_index == 1:  # Back or Faves rectangle selected
             current_path = os.path.dirname(current_path)
             while not button_C.value:  # Wait until button is released
                 pass
@@ -107,6 +107,12 @@ while True:
                 current_path = selected_path
                 while not button_C.value:  # Wait until button is released
                     pass
+
+    # Handle B button press (acts as Back button)
+    if button_B_state:
+        current_path = os.path.dirname(current_path)
+        while not button_B.value:  # Wait until button is released
+            pass
 
     # Draw rectangles and text at the top
     for i in range(3):
