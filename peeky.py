@@ -112,11 +112,11 @@ while True:
 
     # Display file names in the root folder below the rectangles
     root_files = os.listdir("/")
-    for i, file_name in enumerate(root_files):
-        file_y = rect_margin_y + (i + 1) * (rect_height + rect_margin_y)
+    for i, file_name in enumerate(reversed(root_files)):
+        file_y = rect_margin_y + (i + 1) * (filename_rect_height + rect_margin_y)
 
         # Check if the file rectangle is selected
-        is_file_selected = selected_index == 3 + i
+        is_file_selected = selected_index == 3 + len(root_files) - 1 - i
 
         # Draw the file rectangle
         draw.rectangle(
