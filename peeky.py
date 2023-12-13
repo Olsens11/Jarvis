@@ -120,7 +120,7 @@ while True:
 
         # Draw the file rectangle
         draw.rectangle(
-            (0, file_y, oled.width, file_y + filename_rect_height),
+            (0, file_y, filename_rect_width, file_y + filename_rect_height),  # Corrected width
             outline=1 if not is_file_selected else 0,
             fill=1 if is_file_selected else 0,
         )
