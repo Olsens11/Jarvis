@@ -52,6 +52,9 @@ filename_margin_y = 1
 # Initial selected rectangle index
 selected_index = 0
 
+# Previous selected index
+prev_selected_index = 0
+
 # Current directory path
 current_path = "/"
 
@@ -98,6 +101,8 @@ while True:
     if button_C_state:
         if selected_index == 0 or selected_index == 1:  # Back or Faves rectangle selected
             current_path = os.path.dirname(current_path)
+            prev_selected_index = selected_index
+            selected_index = 3  # Select the uppermost filename
             while not button_C.value:  # Wait until button is released
                 pass
         elif selected_index > 2:  # Filename rectangle selected
@@ -105,12 +110,15 @@ while True:
             selected_path = os.path.join(current_path, selected_file)
             if os.path.isdir(selected_path):
                 current_path = selected_path
+                prev_selected_index = selected_index
+                selected_index = 3  # Select the uppermost filename
                 while not button_C.value:  # Wait until button is released
                     pass
 
     # Handle B button press (acts as Back button)
     if button_B_state:
         current_path = os.path.dirname(current_path)
+        selected_index = prev_selected_index
         while not button_B.value:  # Wait until button is released
             pass
 
