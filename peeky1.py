@@ -3,7 +3,6 @@ import board
 import digitalio
 import adafruit_ssd1306
 from PIL import Image, ImageDraw, ImageFont
-import threading
 
 # Set up the OLED Bonnet
 reset_pin = digitalio.DigitalInOut(board.D4)
@@ -63,25 +62,20 @@ current_path = "/"
 words = ["Back", "Faves", "Setup"]
 word_widths = [24, 30, 30]
 
-# Lock for synchronization
-lock = threading.Lock()
-
-# Flag to indicate background loading completion
-loading_complete = True
-
-# Variable to store displayed files
-displayed_files = []
-
 def get_displayed_files(directory):
     return os.listdir(directory)
 
-def load_directory_contents(directory):
-    global displayed_files
-    global loading_complete
+def can_navigate_up(selected_index):
+    return selected_index >= 3
 
-    with lock:
-        displayed_files = get_displayed_files(directory)
-        loading_complete = True
+def can_navigate_down(selected_index, num_files):
+    return selected_index < 3 + num_files
+
+def can_navigate_left(selected_index):
+    return selected_index != 0 and selected_index != 2
+
+def can_navigate_right(selected_index):
+    return selected_index != 1 and selected_index != 2
 
 # Main loop
 while True:
@@ -98,19 +92,19 @@ while True:
     button_C_state = not button_C.value
 
     # Update selected index based on directional buttons
-    if button_U_state:
+    if button_U_state and can_navigate_up(selected_index):
         selected_index = (selected_index - 1) % (3 + len(os.listdir(current_path)))
         while not button_U.value:  # Wait until button is released
             pass
-    elif button_D_state:
+    elif button_D_state and can_navigate_down(selected_index, len(os.listdir(current_path))):
         selected_index = (selected_index + 1) % (3 + len(os.listdir(current_path)))
         while not button_D.value:  # Wait until button is released
             pass
-    elif button_L_state:
+    elif button_L_state and can_navigate_left(selected_index):
         selected_index = (selected_index + 1) % (3 + len(os.listdir(current_path)))  # Adjusted for left
         while not button_L.value:  # Wait until button is released
             pass
-    elif button_R_state:
+    elif button_R_state and can_navigate_right(selected_index):
         selected_index = (selected_index - 1) % (3 + len(os.listdir(current_path)))  # Adjusted for right
         while not button_R.value:  # Wait until button is released
             pass
@@ -130,12 +124,7 @@ while True:
                 current_path = selected_path
                 prev_selected_index = selected_index
                 selected_index = 3  # Select the uppermost filename
-
-                # Start background loading
-                loading_complete = False
-                threading.Thread(target=load_directory_contents, args=(current_path,), daemon=True).start()
-
-                while not button_C.value or not loading_complete:  # Wait until button is released and loading is complete
+                while not button_C.value:  # Wait until button is released
                     pass
 
     # Handle B button press (acts as Back button)
@@ -168,27 +157,27 @@ while True:
         draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
 
     # Display file names in the current directory below the rectangles
-    with lock:
-        for i, file_name in enumerate(reversed(displayed_files)):
-            file_y = rect_margin_y + (i + 1) * (filename_rect_height + rect_margin_y)
+    displayed_files = get_displayed_files(current_path)
+    for i, file_name in enumerate(reversed(displayed_files)):
+        file_y = rect_margin_y + (i + 1) * (filename_rect_height + rect_margin_y)
 
-            # Check if the file rectangle is selected
-            is_file_selected = selected_index == 3 + len(displayed_files) - 1 - i
+        # Check if the file rectangle is selected
+        is_file_selected = selected_index == 3 + len(displayed_files) - 1 - i
 
-            # Draw the file rectangle
-            draw.rectangle(
-                (0, file_y, filename_rect_width, file_y + filename_rect_height),
-                outline=1 if not is_file_selected else 0,
-                fill=1 if is_file_selected else 0,
-            )
+        # Draw the file rectangle
+        draw.rectangle(
+            (0, file_y, filename_rect_width, file_y + filename_rect_height),
+            outline=1 if not is_file_selected else 0,
+            fill=1 if is_file_selected else 0,
+        )
 
-            # Draw the file text
-            draw.text(
-                (rect_margin_x, file_y + filename_margin_y - 1),
-                file_name,
-                font=font,
-                fill=0 if is_file_selected else 1,
-            )
+        # Draw the file text
+        draw.text(
+            (rect_margin_x, file_y + filename_margin_y - 1),
+            file_name,
+            font=font,
+            fill=0 if is_file_selected else 1,
+        )
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)
