@@ -1,3 +1,4 @@
+import os
 import board
 import digitalio
 import adafruit_ssd1306
