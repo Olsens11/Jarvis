@@ -69,6 +69,9 @@ lock = threading.Lock()
 # Flag to indicate background loading completion
 loading_complete = True
 
+# Variable to store displayed files
+displayed_files = []
+
 def get_displayed_files(directory):
     return os.listdir(directory)
 
@@ -79,6 +82,10 @@ def load_directory_contents(directory):
     with lock:
         displayed_files = get_displayed_files(directory)
         loading_complete = True
+
+# Main loop
+while True:
+    # ... (Rest of the code)
 
 # Main loop
 while True:
