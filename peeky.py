@@ -1,11 +1,44 @@
 import os
 
-# ... (previous code)
+# Set up the OLED Bonnet
+reset_pin = digitalio.DigitalInOut(board.D4)
+i2c = board.I2C()
+oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin)
+
+# Load a font
+font = ImageFont.load_default()
+
+# Initialize buttons
+button_U = digitalio.DigitalInOut(board.D17)
+button_U.switch_to_input(pull=digitalio.Pull.UP)
+
+button_D = digitalio.DigitalInOut(board.D22)
+button_D.switch_to_input(pull=digitalio.Pull.UP)
+
+button_R = digitalio.DigitalInOut(board.D23)
+button_R.switch_to_input(pull=digitalio.Pull.UP)
+
+button_L = digitalio.DigitalInOut(board.D27)
+button_L.switch_to_input(pull=digitalio.Pull.UP)
+
+# Rectangles configuration
+rect_width = 40
+rect_height = 12
+rect_margin_x = 1
+rect_margin_y = 1
+
+# Words and their estimated widths
+words = ["Back", "Faves", "Setup"]
+word_widths = [24, 30, 30]
+
+# Initial selected rectangle index
+selected_index = 0
 
 # Main loop
 while True:
-    # Clear the image
-    draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
+    # Create an image with a black background
+    image = Image.new("1", (oled.width, oled.height), 0)
+    draw = ImageDraw.Draw(image)
 
     # Read button states
     button_U_state = not button_U.value
