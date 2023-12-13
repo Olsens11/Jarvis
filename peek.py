@@ -3,7 +3,7 @@ import time
 import board
 import busio
 from digitalio import DigitalInOut, Direction, Pull
-from PIL import Image, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 from font5x8 import font_data  # Import the font data
 
@@ -114,8 +114,10 @@ while True:
     # Handle user input
     if not button_U.value:
         selected_index = max(0, selected_index - 1)
+        time.sleep(0.2)  # Debounce
     elif not button_D.value:
         selected_index = min(len(current_items) - 1, selected_index + 1)
+        time.sleep(0.2)  # Debounce
     elif not button_C.value:
         if selected_index == 0:  # Back
             current_path = os.path.dirname(current_path)
@@ -123,11 +125,8 @@ while True:
             display_favorites(favorites, 0)
         elif selected_index == 2:  # Settings
             display_settings(0)
-    elif not button_A.value:
-        # Additional logic for button A
-        pass
-    elif not button_B.value:
-        # Additional logic for button B
-        pass
+        time.sleep(0.2)  # Debounce
+    
+    # Add additional input handling logic for button_A, button_B, etc.
 
     time.sleep(0.1)  # Adjust sleep duration as needed
