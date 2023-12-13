@@ -75,8 +75,8 @@ while True:
 
         # Draw the text
         text = ["Back", "Favorites", "Settings"][i]
-        text_x = x + (rect_width - font.getsize(text)[0]) // 2
-        text_y = y + (rect_height - font.getsize(text)[1]) // 2
+        text_x = x + rect_margin_x
+        text_y = y + rect_margin_y
         draw.text((text_x, text_y), text, font=font, fill=0 if is_selected else 1)
 
     # Rotate the image 180 degrees before displaying
