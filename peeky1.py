@@ -85,10 +85,6 @@ def load_directory_contents(directory):
 
 # Main loop
 while True:
-    # ... (Rest of the code)
-
-# Main loop
-while True:
     # Clear the image
     draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
 
