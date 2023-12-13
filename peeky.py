@@ -29,10 +29,10 @@ button_L = digitalio.DigitalInOut(board.D27)
 button_L.switch_to_input(pull=digitalio.Pull.UP)
 
 # Rectangles configuration
-rect_width = 40  # Adjusted width
-rect_height = 12  # Adjusted height
-rect_margin_x = 1  # Adjusted margin
-rect_margin_y = 1  # Adjusted margin
+rect_width = 40
+rect_height = 20
+rect_margin_x = 1
+rect_margin_y = 1
 
 # Initial selected rectangle index
 selected_index = 0
@@ -57,11 +57,19 @@ while True:
         selected_index = (selected_index + 1) % 3
         while not button_D.value:  # Wait until button is released
             pass
+    elif button_L_state:
+        selected_index = (selected_index + 1) % 3  # Adjusted for left
+        while not button_L.value:  # Wait until button is released
+            pass
+    elif button_R_state:
+        selected_index = (selected_index - 1) % 3  # Adjusted for right
+        while not button_R.value:  # Wait until button is released
+            pass
 
     # Draw rectangles and text
     for i in range(3):
         x = i * (rect_width + rect_margin_x)
-        y = rect_margin_y  # Adjusted margin
+        y = rect_margin_y
 
         # Check if the rectangle is selected
         is_selected = i == selected_index
@@ -74,9 +82,9 @@ while True:
         )
 
         # Draw the text
-        text = ["Back", "Favorites", "Settings"][i]
+        text = ["Back", "Faves", "Setup"][i]
         text_x = x + rect_margin_x
-        text_y = y + rect_margin_y - 1  # Adjusted text position
+        text_y = y + rect_margin_y - 1
         draw.text((text_x, text_y), text, font=font, fill=0 if is_selected else 1)
 
     # Rotate the image 180 degrees before displaying
