@@ -16,11 +16,25 @@ draw = ImageDraw.Draw(image)
 font = ImageFont.load_default()
 
 # Initialize buttons
-button_A = digitalio.DigitalInOut(board.D5)
-button_A.switch_to_input(pull=digitalio.Pull.UP)
+button_U = digitalio.DigitalInOut(board.D17)
+button_U.switch_to_input(pull=digitalio.Pull.UP)
 
-button_B = digitalio.DigitalInOut(board.D6)
-button_B.switch_to_input(pull=digitalio.Pull.UP)
+button_D = digitalio.DigitalInOut(board.D22)
+button_D.switch_to_input(pull=digitalio.Pull.UP)
+
+button_R = digitalio.DigitalInOut(board.D23)
+button_R.switch_to_input(pull=digitalio.Pull.UP)
+
+button_L = digitalio.DigitalInOut(board.D27)
+button_L.switch_to_input(pull=digitalio.Pull.UP)
+
+# Rectangles configuration
+rect_width = 80
+rect_height = 20
+rect_margin = 10
+
+# Initial selected rectangle index
+selected_index = 0
 
 # Main loop
 while True:
@@ -28,42 +42,43 @@ while True:
     draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
 
     # Read button states
-    button_A_state = not button_A.value
-    button_B_state = not button_B.value
+    button_U_state = not button_U.value
+    button_D_state = not button_D.value
+    button_R_state = not button_R.value
+    button_L_state = not button_L.value
+
+    # Update selected index based on directional buttons
+    if button_U_state:
+        selected_index = (selected_index - 1) % 3
+        while not button_U.value:  # Wait until button is released
+            pass
+    elif button_D_state:
+        selected_index = (selected_index + 1) % 3
+        while not button_D.value:  # Wait until button is released
+            pass
 
     # Draw rectangles and text
-    rect_width = 42
-    rect_height = 10
-    rect_margin = 2
+    for i in range(3):
+        x = rect_margin
+        y = i * (rect_height + rect_margin)
 
-    # Back rectangle
-    draw.rectangle(
-        (rect_margin, rect_margin, rect_width, rect_height),
-        outline=1 if button_A_state else 0,
-        fill=1 if button_A_state else 0,
-    )
-    draw.text((rect_margin + 5, rect_margin + 2), "Back", font=font, fill=0)
+        # Check if the rectangle is selected
+        is_selected = i == selected_index
 
-    # Favorites rectangle
-    draw.rectangle(
-        (rect_width + 2 * rect_margin, rect_margin, 2 * rect_width + rect_margin, rect_height),
-        outline=1 if button_B_state else 0,
-        fill=1 if button_B_state else 0,
-    )
-    draw.text((2 * rect_margin + rect_width + 5, rect_margin + 2), "Favorites", font=font, fill=0)
+        # Draw the rectangle
+        draw.rectangle(
+            (x, y, x + rect_width, y + rect_height),
+            outline=1 if not is_selected else 0,
+            fill=1 if is_selected else 0,
+        )
 
-    # Settings rectangle
-    draw.rectangle(
-        (2 * rect_width + 3 * rect_margin, rect_margin, 3 * rect_width + 2 * rect_margin, rect_height),
-        outline=1 if not (button_A_state or button_B_state) else 0,
-        fill=1 if not (button_A_state or button_B_state) else 0,
-    )
-    draw.text(
-        (3 * rect_margin + 2 * rect_width + 5, rect_margin + 2),
-        "Settings",
-        font=font,
-        fill=0,
-    )
+        # Draw the text
+        draw.text(
+            (x + rect_margin, y + rect_margin),
+            ["Back", "Favorites", "Settings"][i],
+            font=font,
+            fill=0 if is_selected else 1,
+        )
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)
