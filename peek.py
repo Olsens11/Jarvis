@@ -49,7 +49,7 @@ button_C.direction = Direction.INPUT
 button_C.pull = Pull.UP
 
 # Load font
-font = ImageFont.load_data(font_data, FONT_SIZE)
+font = ImageFont.load_default()  # Use the default font
 
 # Function to display text on OLED
 def display_text(text, color=WHITE):
