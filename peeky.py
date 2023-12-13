@@ -30,7 +30,7 @@ button_L.switch_to_input(pull=digitalio.Pull.UP)
 
 # Rectangles configuration
 rect_width = 40  # Adjusted width
-rect_height = 20  # Adjusted height
+rect_height = 12  # Adjusted height
 rect_margin_x = 1  # Adjusted margin
 rect_margin_y = 1  # Adjusted margin
 
