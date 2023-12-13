@@ -44,6 +44,11 @@ rect_height = 12
 rect_margin_x = 1
 rect_margin_y = 1
 
+# Filename rectangles configuration
+filename_rect_width = 124  # Adjusted width
+filename_rect_height = 12
+filename_margin_y = 1
+
 # Initial selected rectangle index
 selected_index = 0
 
@@ -67,19 +72,19 @@ while True:
 
     # Update selected index based on directional buttons
     if button_U_state:
-        selected_index = (selected_index - 1) % 3
+        selected_index = (selected_index - 1) % (3 + len(os.listdir("/")))
         while not button_U.value:  # Wait until button is released
             pass
     elif button_D_state:
-        selected_index = (selected_index + 1) % 3
+        selected_index = (selected_index + 1) % (3 + len(os.listdir("/")))
         while not button_D.value:  # Wait until button is released
             pass
     elif button_L_state:
-        selected_index = (selected_index + 1) % 3  # Adjusted for left
+        selected_index = (selected_index + 1) % (3 + len(os.listdir("/")))  # Adjusted for left
         while not button_L.value:  # Wait until button is released
             pass
     elif button_R_state:
-        selected_index = (selected_index - 1) % 3  # Adjusted for right
+        selected_index = (selected_index - 1) % (3 + len(os.listdir("/")))  # Adjusted for right
         while not button_R.value:  # Wait until button is released
             pass
 
@@ -115,14 +120,14 @@ while True:
 
         # Draw the file rectangle
         draw.rectangle(
-            (0, file_y, oled.width, file_y + rect_height),
+            (0, file_y, oled.width, file_y + filename_rect_height),
             outline=1 if not is_file_selected else 0,
             fill=1 if is_file_selected else 0,
         )
 
         # Draw the file text
         draw.text(
-            (rect_margin_x, file_y + rect_margin_y - 1),
+            (rect_margin_x, file_y + filename_margin_y - 1),
             file_name,
             font=font,
             fill=0 if is_file_selected else 1,
