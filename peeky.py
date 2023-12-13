@@ -45,16 +45,22 @@ rect_margin_x = 1
 rect_margin_y = 1
 
 # Filename rectangles configuration
-filename_rect_width = 124  # Adjusted width
+filename_rect_width = 122
 filename_rect_height = 12
 filename_margin_y = 1
 
 # Initial selected rectangle index
 selected_index = 0
 
+# Current directory path
+current_path = "/"
+
 # Words and their estimated widths
 words = ["Back", "Faves", "Setup"]
 word_widths = [24, 30, 30]
+
+def get_displayed_files(directory):
+    return os.listdir(directory)
 
 # Main loop
 while True:
@@ -72,21 +78,35 @@ while True:
 
     # Update selected index based on directional buttons
     if button_U_state:
-        selected_index = (selected_index - 1) % (3 + len(os.listdir("/")))
+        selected_index = (selected_index - 1) % (3 + len(os.listdir(current_path)))
         while not button_U.value:  # Wait until button is released
             pass
     elif button_D_state:
-        selected_index = (selected_index + 1) % (3 + len(os.listdir("/")))
+        selected_index = (selected_index + 1) % (3 + len(os.listdir(current_path)))
         while not button_D.value:  # Wait until button is released
             pass
     elif button_L_state:
-        selected_index = (selected_index + 1) % (3 + len(os.listdir("/")))  # Adjusted for left
+        selected_index = (selected_index + 1) % (3 + len(os.listdir(current_path)))  # Adjusted for left
         while not button_L.value:  # Wait until button is released
             pass
     elif button_R_state:
-        selected_index = (selected_index - 1) % (3 + len(os.listdir("/")))  # Adjusted for right
+        selected_index = (selected_index - 1) % (3 + len(os.listdir(current_path)))  # Adjusted for right
         while not button_R.value:  # Wait until button is released
             pass
+
+    # Handle center button press
+    if button_C_state:
+        if selected_index == 0:  # Back rectangle selected
+            current_path = os.path.dirname(current_path)
+            while not button_C.value:  # Wait until button is released
+                pass
+        elif selected_index > 2:  # Filename rectangle selected
+            selected_file = os.listdir(current_path)[len(os.listdir(current_path)) - selected_index + 2]
+            selected_path = os.path.join(current_path, selected_file)
+            if os.path.isdir(selected_path):
+                current_path = selected_path
+                while not button_C.value:  # Wait until button is released
+                    pass
 
     # Draw rectangles and text at the top
     for i in range(3):
@@ -110,17 +130,17 @@ while True:
         # Draw the text
         draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
 
-    # Display file names in the root folder below the rectangles
-    root_files = os.listdir("/")
-    for i, file_name in enumerate(reversed(root_files)):
+    # Display file names in the current directory below the rectangles
+    displayed_files = get_displayed_files(current_path)
+    for i, file_name in enumerate(reversed(displayed_files)):
         file_y = rect_margin_y + (i + 1) * (filename_rect_height + rect_margin_y)
 
         # Check if the file rectangle is selected
-        is_file_selected = selected_index == 3 + len(root_files) - 1 - i
+        is_file_selected = selected_index == 3 + len(displayed_files) - 1 - i
 
         # Draw the file rectangle
         draw.rectangle(
-            (0, file_y, filename_rect_width, file_y + filename_rect_height),  # Corrected width
+            (0, file_y, filename_rect_width, file_y + filename_rect_height),
             outline=1 if not is_file_selected else 0,
             fill=1 if is_file_selected else 0,
         )
