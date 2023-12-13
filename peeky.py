@@ -58,15 +58,15 @@ while True:
         while not button_D.value:  # Wait until button is released
             pass
     elif button_L_state:
-        selected_index = (selected_index + 1) % 3
+        selected_index = (selected_index + 1) % 3  # Adjusted for left
         while not button_L.value:  # Wait until button is released
             pass
     elif button_R_state:
-        selected_index = (selected_index - 1) % 3
+        selected_index = (selected_index - 1) % 3  # Adjusted for right
         while not button_R.value:  # Wait until button is released
             pass
 
-    # Draw rectangles and text
+    # Draw rectangles and centered text
     for i in range(3):
         x = i * (rect_width + rect_margin_x)
         y = rect_margin_y
@@ -81,11 +81,15 @@ while True:
             fill=1 if is_selected else 0,
         )
 
-        # Draw the text
+        # Calculate the center of the rectangle
+        center_x = x + rect_width // 2
+        center_y = y + rect_height // 2
+
+        # Draw the centered text
         text = ["Back", "Faves", "Setup"][i]
-        text_width, text_height = draw.textsize(text, font)
-        text_x = x + (rect_width - text_width) // 2  # Center horizontally
-        text_y = y + rect_margin_y - 1
+        text_width, text_height = draw.textsize(text, font=font)
+        text_x = center_x - text_width // 2
+        text_y = center_y - text_height // 2 - 1
         draw.text((text_x, text_y), text, font=font, fill=0 if is_selected else 1)
 
     # Rotate the image 180 degrees before displaying
