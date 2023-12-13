@@ -5,6 +5,15 @@ import busio
 from digitalio import DigitalInOut, Direction, Pull
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
+from font5x8 import font_data  # Import the font data
+
+# Constants
+WHITE = 1
+BLACK = 0
+DISPLAY_WIDTH = 128
+DISPLAY_HEIGHT = 64
+FONT_SIZE = 8  # Change this value as needed
+MAX_FILE_NAME_LENGTH = 16  # Adjust based on your preference
 
 # Initialize I2C and OLED display
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -39,35 +48,32 @@ button_C = DigitalInOut(board.D4)
 button_C.direction = Direction.INPUT
 button_C.pull = Pull.UP
 
-# Constants
-WHITE = 1
-BLACK = 0
-DISPLAY_WIDTH = 128
-DISPLAY_HEIGHT = 64
-FONT_SIZE = 10
-MAX_FILE_NAME_LENGTH = 16  # Adjust based on your preference
-
 # Load font
-font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-font = ImageFont.truetype(font_path, FONT_SIZE)
+font = ImageFont.load_default()  # Use the default font
 
 # Function to display text on OLED
 def display_text(text, color=WHITE):
     oled.fill(0)
-    draw = ImageDraw.Draw(oled)
-    draw.text((0, 0), text, font=font, fill=color)
+    x = 0
+    y = 0
+    for char in text:
+        oled.text(char, x, y, color)
+        x += FONT_SIZE  # Adjust the spacing based on your preference
+        if x >= DISPLAY_WIDTH:
+            x = 0
+            y += FONT_SIZE + 2  # Adjust the vertical spacing based on your preference
     oled.show()
 
 # Function to display menu options
 def display_menu(options, selected_index):
     oled.fill(0)
-    draw = ImageDraw.Draw(oled)
     for i, option in enumerate(options):
+        y = i * (FONT_SIZE + 2)
         if i == selected_index:
-            draw.rectangle((0, i * (FONT_SIZE + 2), DISPLAY_WIDTH, i * (FONT_SIZE + 2) + FONT_SIZE + 2), outline=WHITE, fill=WHITE)
-            draw.text((2, i * (FONT_SIZE + 2) + 2), option, font=font, fill=BLACK)
+            oled.rect(0, y, DISPLAY_WIDTH, y + FONT_SIZE + 2, WHITE)
+            display_text(option, BLACK)
         else:
-            draw.text((2, i * (FONT_SIZE + 2) + 2), option, font=font, fill=WHITE)
+            display_text(option, WHITE)
     oled.show()
 
 # Function to handle file/folder selection
@@ -117,11 +123,7 @@ while True:
             display_favorites(favorites, 0)
         elif selected_index == 2:  # Settings
             display_settings(0)
-    elif not button_A.value:
-        # Additional logic for button A
-        pass
-    elif not button_B.value:
-        # Additional logic for button B
-        pass
+    
+    # Add additional input handling logic for button_A, button_B, etc.
 
     time.sleep(0.1)  # Adjust sleep duration as needed
