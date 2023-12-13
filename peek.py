@@ -3,7 +3,6 @@ import time
 import board
 import busio
 from digitalio import DigitalInOut, Direction, Pull
-from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 
 # Initialize I2C and OLED display
@@ -47,27 +46,29 @@ DISPLAY_HEIGHT = 64
 FONT_SIZE = 10
 MAX_FILE_NAME_LENGTH = 16  # Adjust based on your preference
 
-# Load font
-font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-font = ImageFont.truetype(font_path, FONT_SIZE)
-
 # Function to display text on OLED
 def display_text(text, color=WHITE):
     oled.fill(0)
-    draw = ImageDraw.Draw(oled.image)
-    draw.text((0, 0), text, font=font, fill=color)
+    x = 0
+    y = 0
+    for char in text:
+        oled.text(char, x, y, color)
+        x += FONT_SIZE  # Adjust the spacing based on your preference
+        if x >= DISPLAY_WIDTH:
+            x = 0
+            y += FONT_SIZE + 2  # Adjust the vertical spacing based on your preference
     oled.show()
 
 # Function to display menu options
 def display_menu(options, selected_index):
     oled.fill(0)
-    draw = ImageDraw.Draw(oled.image)
     for i, option in enumerate(options):
+        y = i * (FONT_SIZE + 2)
         if i == selected_index:
-            draw.rectangle((0, i * (FONT_SIZE + 2), DISPLAY_WIDTH, i * (FONT_SIZE + 2) + FONT_SIZE + 2), outline=WHITE, fill=WHITE)
-            draw.text((2, i * (FONT_SIZE + 2) + 2), option, font=font, fill=BLACK)
+            oled.rect(0, y, DISPLAY_WIDTH, y + FONT_SIZE + 2, WHITE)
+            display_text(option, BLACK)
         else:
-            draw.text((2, i * (FONT_SIZE + 2) + 2), option, font=font, fill=WHITE)
+            display_text(option, WHITE)
     oled.show()
 
 # Function to handle file/folder selection
