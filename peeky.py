@@ -1,45 +1,6 @@
-import board
-import digitalio
-import adafruit_ssd1306
-from PIL import Image, ImageDraw, ImageFont
+import os
 
-# Set up the OLED Bonnet
-reset_pin = digitalio.DigitalInOut(board.D4)
-i2c = board.I2C()
-oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin)
-
-# Create an image with a black background
-image = Image.new("1", (oled.width, oled.height), 0)
-draw = ImageDraw.Draw(image)
-
-# Load a font
-font = ImageFont.load_default()
-
-# Initialize buttons
-button_U = digitalio.DigitalInOut(board.D17)
-button_U.switch_to_input(pull=digitalio.Pull.UP)
-
-button_D = digitalio.DigitalInOut(board.D22)
-button_D.switch_to_input(pull=digitalio.Pull.UP)
-
-button_R = digitalio.DigitalInOut(board.D23)
-button_R.switch_to_input(pull=digitalio.Pull.UP)
-
-button_L = digitalio.DigitalInOut(board.D27)
-button_L.switch_to_input(pull=digitalio.Pull.UP)
-
-# Rectangles configuration
-rect_width = 40
-rect_height = 12
-rect_margin_x = 1
-rect_margin_y = 1
-
-# Initial selected rectangle index
-selected_index = 0
-
-# Words and their estimated widths
-words = ["Back", "Faves", "Setup"]
-word_widths = [24, 30, 30]
+# ... (previous code)
 
 # Main loop
 while True:
@@ -91,6 +52,12 @@ while True:
 
         # Draw the text
         draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
+
+    # Display file names in the root folder below the rectangles
+    root_files = os.listdir("/")
+    for i, file_name in enumerate(root_files):
+        file_y = rect_margin_y + (i + 1) * (rect_height + rect_margin_y)
+        draw.text((rect_margin_x, file_y), file_name, font=font, fill=1)
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)
