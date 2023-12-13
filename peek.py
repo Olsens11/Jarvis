@@ -53,28 +53,34 @@ font = ImageFont.load_default()  # Use the default font
 
 # Function to display text on OLED
 def display_text(text, color=WHITE):
-    oled.fill(0)
-    x = 0
-    y = 0
-    for char in text:
-        oled.text(char, x, y, color)
-        x += FONT_SIZE  # Adjust the spacing based on your preference
-        if x >= DISPLAY_WIDTH:
-            x = 0
-            y += FONT_SIZE + 2  # Adjust the vertical spacing based on your preference
-    oled.show()
+    try:
+        oled.fill(0)
+        x = 0
+        y = 0
+        for char in text:
+            oled.text(char, x, y, color)
+            x += FONT_SIZE  # Adjust the spacing based on your preference
+            if x >= DISPLAY_WIDTH:
+                x = 0
+                y += FONT_SIZE + 2  # Adjust the vertical spacing based on your preference
+        oled.show()
+    except Exception as e:
+        print(f"Exception during display_text: {e}")
 
 # Function to display menu options
 def display_menu(options, selected_index):
-    oled.fill(0)
-    for i, option in enumerate(options):
-        y = i * (FONT_SIZE + 2)
-        if i == selected_index:
-            oled.rect(0, y, DISPLAY_WIDTH, y + FONT_SIZE + 2, WHITE)
-            display_text(option, BLACK)
-        else:
-            display_text(option, WHITE)
-    oled.show()
+    try:
+        oled.fill(0)
+        for i, option in enumerate(options):
+            y = i * (FONT_SIZE + 2)
+            if i == selected_index:
+                oled.rect(0, y, DISPLAY_WIDTH, y + FONT_SIZE + 2, WHITE)
+                display_text(option, BLACK)
+            else:
+                display_text(option, WHITE)
+        oled.show()
+    except Exception as e:
+        print(f"Exception during display_menu: {e}")
 
 # Function to handle file/folder selection
 def select_item(items, selected_index):
@@ -82,19 +88,29 @@ def select_item(items, selected_index):
 
 # Function to display and handle favorites screen
 def display_favorites(favorites, selected_index):
-    display_menu(favorites, selected_index)
-    # Handle user input and add to favorites logic here
+    try:
+        display_menu(favorites, selected_index)
+        # Handle user input and add to favorites logic here
+    except Exception as e:
+        print(f"Exception during display_favorites: {e}")
 
 # Function to display and handle settings screen
 def display_settings(selected_index):
-    settings = ["Invert Black/White", "Rotate Screen", "Close Program"]
-    display_menu(settings, selected_index)
-    # Handle user input and settings logic here
+    try:
+        settings = ["Invert Black/White", "Rotate Screen", "Close Program"]
+        display_menu(settings, selected_index)
+        # Handle user input and settings logic here
+    except Exception as e:
+        print(f"Exception during display_settings: {e}")
 
 # Function to browse and display files in a directory
 def browse_directory(path):
-    files = os.listdir(path)
-    return [file[:MAX_FILE_NAME_LENGTH] for file in files]
+    try:
+        files = os.listdir(path)
+        return [file[:MAX_FILE_NAME_LENGTH] for file in files]
+    except Exception as e:
+        print(f"Exception during browse_directory: {e}")
+        return []
 
 # Main program
 current_path = "/"
@@ -102,31 +118,34 @@ selected_index = 0
 favorites = []
 
 while True:
-    current_items = browse_directory(current_path)
+    try:
+        current_items = browse_directory(current_path)
 
-    # Display top menu
-    menu_options = ["Back", "Favorites", "Settings"]
-    display_menu(menu_options, selected_index)
+        # Display top menu
+        menu_options = ["Back", "Favorites", "Settings"]
+        display_menu(menu_options, selected_index)
 
-    # Display file/folder names
-    display_menu(current_items, selected_index)
+        # Display file/folder names
+        display_menu(current_items, selected_index)
 
-    # Handle user input
-    if not button_U.value:
-        selected_index = max(0, selected_index - 1)
-        time.sleep(0.2)  # Debounce
-    elif not button_D.value:
-        selected_index = min(len(current_items) - 1, selected_index + 1)
-        time.sleep(0.2)  # Debounce
-    elif not button_C.value:
-        if selected_index == 0:  # Back
-            current_path = os.path.dirname(current_path)
-        elif selected_index == 1:  # Favorites
-            display_favorites(favorites, 0)
-        elif selected_index == 2:  # Settings
-            display_settings(0)
-        time.sleep(0.2)  # Debounce
-    
+        # Handle user input
+        if not button_U.value:
+            selected_index = max(0, selected_index - 1)
+            time.sleep(0.2)  # Debounce
+        elif not button_D.value:
+            selected_index = min(len(current_items) - 1, selected_index + 1)
+            time.sleep(0.2)  # Debounce
+        elif not button_C.value:
+            if selected_index == 0:  # Back
+                current_path = os.path.dirname(current_path)
+            elif selected_index == 1:  # Favorites
+                display_favorites(favorites, 0)
+            elif selected_index == 2:  # Settings
+                display_settings(0)
+            time.sleep(0.2)  # Debounce
+    except Exception as e:
+        print(f"Main loop exception: {e}")
+
     # Add additional input handling logic for button_A, button_B, etc.
 
     time.sleep(0.1)  # Adjust sleep duration as needed
