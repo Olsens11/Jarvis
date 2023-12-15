@@ -127,8 +127,8 @@ while True:
     )
 
     # Draw rectangles and text at the top
-    words = ["Back", "Faves", "Setup"]
-    word_widths = [4, 5, 5]  # Estimated widths, replace with actual values
+    words = ["Root", "Faves", "Setup"]
+    word_widths = [3, 5, 5]  # Estimated widths, replace with actual values
 
     for i in range(3):
         x = square_width + i * (rect_width + rect_margin_x)
