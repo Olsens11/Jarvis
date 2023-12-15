@@ -46,8 +46,8 @@ square_fill_color_selected = 0
 square_fill_color_unselected = 1
 square_outline_color = 1
 
-vert_rect_x
-vert_rect_y
+vert_rect_x = 12
+vert_rect_y = 54
 vert_rect_width = 12
 vert_rect_height = 54
 vert_rect_outline_color_selected = 0
