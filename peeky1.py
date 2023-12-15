@@ -7,6 +7,18 @@ import adafruit_ssd1306
 from PIL import Image, ImageDraw, ImageFont
 from config import *
 
+# Set up the OLED Bonnet
+reset_pin = digitalio.DigitalInOut(board.D4)
+i2c = board.I2C()
+oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin)
+
+# Create an image with a black background
+image = Image.new("1", (oled.width, oled.height), 0)
+draw = ImageDraw.Draw(image)
+
+# Load a font
+font = ImageFont.load_default()
+
 while True:
     # Read button states
     button_A_state = not button_A.value
@@ -32,18 +44,6 @@ while True:
     
     # Clear the image and draw the UI based on the updated selected_index
     draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
-# Set up the OLED Bonnet
-reset_pin = digitalio.DigitalInOut(board.D4)
-i2c = board.I2C()
-oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin)
-
-# Create an image with a black background
-image = Image.new("1", (oled.width, oled.height), 0)
-draw = ImageDraw.Draw(image)
-
-# Load a font
-font = ImageFont.load_default()
-
 
 # Initialize buttons
 button_A = digitalio.DigitalInOut(board.D5)
