@@ -44,12 +44,12 @@ rect_height = 12
 rect_margin_x = 1
 rect_margin_y = 1
 
-filename_rect_width = 124
+filename_rect_width = 112
 filename_rect_height = 12
-max_filename_length = 16  # Maximum characters to display in filename rectangle
+max_filename_length = 15  # Maximum characters to display in filename rectangle
 
 square_width = 12
-square_height = rect_height + 2  # Make the square the same height as the rectangles
+square_height = rect_height  # Make the square the same height as the rectangles
 
 # Adjust the rectangle width and spacing
 rect_width -= square_width + rect_margin_x  # Reduce rectangle width by square width
