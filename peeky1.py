@@ -19,30 +19,30 @@ draw = ImageDraw.Draw(image)
 # Load a font
 font = ImageFont.load_default()
 
-
-# Initialize buttons
-button_A = digitalio.DigitalInOut(board.D5)
-button_A.switch_to_input(pull=digitalio.Pull.UP)
-
-button_B = digitalio.DigitalInOut(board.D6)
-button_B.switch_to_input(pull=digitalio.Pull.UP)
-
-button_L = digitalio.DigitalInOut(board.D27)
-button_L.switch_to_input(pull=digitalio.Pull.UP)
-
-button_R = digitalio.DigitalInOut(board.D23)
-button_R.switch_to_input(pull=digitalio.Pull.UP)
-
-button_U = digitalio.DigitalInOut(board.D17)
-button_U.switch_to_input(pull=digitalio.Pull.UP)
-
-button_D = digitalio.DigitalInOut(board.D22)
-button_D.switch_to_input(pull=digitalio.Pull.UP)
-
-button_C = digitalio.DigitalInOut(board.D4)
-button_C.switch_to_input(pull=digitalio.Pull.UP)
-
 while True:
+    # Initialize buttons
+    button_A = digitalio.DigitalInOut(board.D5)
+    button_A.switch_to_input(pull=digitalio.Pull.UP)
+
+    button_B = digitalio.DigitalInOut(board.D6)
+    button_B.switch_to_input(pull=digitalio.Pull.UP)
+
+    button_L = digitalio.DigitalInOut(board.D27)
+    button_L.switch_to_input(pull=digitalio.Pull.UP)
+
+    button_R = digitalio.DigitalInOut(board.D23)
+    button_R.switch_to_input(pull=digitalio.Pull.UP)
+
+    button_U = digitalio.DigitalInOut(board.D17)
+    button_U.switch_to_input(pull=digitalio.Pull.UP)
+
+    button_D = digitalio.DigitalInOut(board.D22)
+    button_D.switch_to_input(pull=digitalio.Pull.UP)
+
+    button_C = digitalio.DigitalInOut(board.D4)
+    button_C.switch_to_input(pull=digitalio.Pull.UP)
+
+
     # Read button states
     button_A_state = not button_A.value
     button_B_state = not button_B.value
