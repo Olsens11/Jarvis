@@ -102,12 +102,15 @@ while True:
         fill=square_fill_color,
     )
 
-    # Draw three horizontal lines inside the square
-    for line_y in range(2, square_height - 1, 3):
-        draw.line(
-            [(3, line_y), (square_width - 2, line_y)],
-            fill=1 if selected_index == 0 else 0,
-        )
+    # Calculate the x-coordinates for the horizontal lines
+        line_x_start = 2
+        line_x_end = square_width - 2
+
+    # Draw three horizontally centered lines inside the square
+        draw.line([(line_x_start, 4), (line_x_end, 4)], fill=1 if selected_index == 0 else 0)
+        draw.line([(line_x_start, 8), (line_x_end, 8)], fill=1 if selected_index == 0 else 0)
+        draw.line([(line_x_start, 12), (line_x_end, 12)], fill=1 if selected_index == 0 else 0)
+
 
     # Draw the vertical rectangle to the left of the filenames
     vert_rect_x = vert_rect_width
