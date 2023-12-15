@@ -141,11 +141,9 @@ while True:
         while not button_B.value:  # Wait until button is released
             pass
 
-    # Draw the vertical rectangle to the left of the filenames
-    vert_rect_x = square_width - vert_rect_width - vert_rect_margin_x
-    vert_rect_y = rect_margin_y
+    # Draw the square to the left of the rectangles
     draw.rectangle(
-        (vert_rect_x, vert_rect_y, vert_rect_x + vert_rect_width, vert_rect_y + vert_rect_height),
+        (0, rect_margin_y, square_width, rect_margin_y + square_height),
         outline=1 if selected_index == 0 else 0,
         fill=1 if selected_index == 0 else 0,
     )
