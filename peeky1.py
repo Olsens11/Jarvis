@@ -50,6 +50,7 @@ button_C.direction = Direction.INPUT
 button_C.pull = Pull.UP
 
 selected_index = 0  # Set the initial selected index to 0
+max_index = 2  # Set the maximum index based on the number of top words
 
 # Button Handling Section
 while True:
