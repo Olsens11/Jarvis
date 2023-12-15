@@ -91,7 +91,7 @@ while True:
         # Example: Move down to the next file if the Down button is pressed
         selected_index += 1
 
-    # Rectangles and square configuration
+   # Rectangles and square configuration
     rect_width = 38
     rect_height = 12
     rect_margin_x = 1
@@ -111,16 +111,14 @@ while True:
     draw.line([(line_x_start, 8), (line_x_end, 8)], fill=1 if selected_index == 0 else 0)
     draw.line([(line_x_start, 12), (line_x_end, 12)], fill=1 if selected_index == 0 else 0)
 
-
-
-    # Draw the vertical rectangle to the left of the filenames
-    vert_rect_x = vert_rect_width
-    vert_rect_y = vert_rect_height
+    # Draw a vertical rectangle to the left of the filenames
+    vertical_rect_width = 2
+    vertical_rect_height = (filename_rect_height + rect_margin_y) * 4  # Same height as the square
     draw.rectangle(
-        (vert_rect_x, vert_rect_y, vert_rect_x + vert_rect_width, vert_rect_y + vert_rect_height),
-        outline=1 if selected_index == 0 else 0,
-        fill=1 if selected_index == 0 else 0,
-    )
+        [(rect_margin_x, rect_margin_y), (rect_margin_x + vertical_rect_width, vertical_rect_height)],
+        outline=1 if selected_index == 1 else 0,
+        fill=1 if selected_index == 1 else 0,
+)
 
     # Draw rectangles and text at the top
     words = ["Back", "Faves", "Setup"]
