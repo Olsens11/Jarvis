@@ -116,7 +116,7 @@ while True:
 
     # Draw rectangles and text at the top
     words = ["Back", "Faves", "Setup"]
-    word_widths = [font.getsize(word)[0] for word in words]
+    word_widths = [5, 5, 5]  # Estimated widths, replace with actual values
 
     for i in range(3):
         x = square_width + i * (rect_width + rect_margin_x)
