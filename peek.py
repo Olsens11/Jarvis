@@ -128,28 +128,38 @@ while True:
         # Draw the text
         draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
 
-    # Display file names in the current directory below the rectangles
-    displayed_files = os.listdir(current_directory)
-    for i, file_name in enumerate(reversed(displayed_files)):
-        file_y = rect_margin_y + (i + 1) * (filename_rect_height + rect_margin_y)
+# Display file names in the current directory below the rectangles
+displayed_files = os.listdir(current_directory)
+for i, file_name in enumerate(reversed(displayed_files)):
+    file_y = rect_margin_y + (i + 1) * (filename_rect_height + rect_margin_y)
 
-        # Check if the filename rectangle is selected
-        is_selected = i + 3 == selected_index
+    # Check if the filename rectangle is selected
+    is_selected = i + 3 == selected_index
 
-        # Draw the filename rectangle
-        draw.rectangle(
-            (square_width, file_y, square_width + filename_rect_width, file_y + filename_rect_height),
-            outline=1 if not is_selected else 0,
-            fill=1 if is_selected else 0,
-        )
+    # Draw the filename rectangle
+    draw.rectangle(
+        (square_width, file_y, square_width + filename_rect_width, file_y + filename_rect_height),
+        outline=outline_color if not is_selected else 0,
+        fill=fill_color_selected if is_selected else fill_color_unselected,
+    )
 
-        # Draw the filename text
-        draw.text(
-            (square_width + 1, file_y + 1),
-            file_name if len(file_name) <= max_filename_length else file_name[:max_filename_length - 3] + "...",
-            font=font,
-            fill=0 if is_selected else 1,
-        )
+    # Determine text position based on alignment
+    if text_alignment == "left":
+        text_x = square_width + text_x_offset
+    elif text_alignment == "center":
+        text_x = square_width + (filename_rect_width - font.getsize(file_name)[0]) // 2
+    elif text_alignment == "right":
+        text_x = square_width + filename_rect_width - font.getsize(file_name)[0] - text_x_offset
+    else:
+        raise ValueError("Invalid text alignment value in config.py")
+
+    # Draw the filename text
+    draw.text(
+        (text_x, file_y + text_y_offset),
+        file_name if len(file_name) <= max_filename_length else file_name[:max_filename_length - 3] + "...",
+        font=font,
+        fill=text_color_selected if is_selected else text_color_unselected,
+    )
 
     # Rotate the image 180 degrees before displaying
     rotated_image = image.rotate(180)

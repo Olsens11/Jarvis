@@ -15,5 +15,20 @@ max_filename_length = 15  # Maximum characters to display in filename rectangle
 square_width = 12  # Width of the square
 square_height = rect_height  # Height of the square (same as top rectangles)
 
-vert_rect_width = 12  # Width of the vertical rectangle
-vert_rect_height = 52  # Height of the vertical rectangle (same as top rectangles)
+vert_rect_width = 4  # Width of the vertical rectangle
+vert_rect_height = rect_height  # Height of the vertical rectangle (same as top rectangles)
+
+# Display parameters
+outline_color = 1  # Color for shape outlines (1 for white, 0 for black)
+fill_color_selected = 0  # Fill color when shape is selected (0 for black, 1 for white)
+fill_color_unselected = 1  # Fill color when shape is unselected (1 for white, 0 for black)
+text_color_selected = 0  # Text color when shape is selected (0 for black, 1 for white)
+text_color_unselected = 1  # Text color when shape is unselected (1 for white, 0 for black)
+
+# Text position parameters
+text_x_offset = 1  # Horizontal offset for text in shapes
+text_y_offset = 1  # Vertical offset for text in shapes
+text_alignment = "left"  # Text alignment ("left", "center", "right")
+
+# Square line parameters
+square_line_color = 1  # Color for lines in the square (1 for white, 0 for black)
