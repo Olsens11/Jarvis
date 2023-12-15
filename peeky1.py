@@ -6,6 +6,7 @@ import digitalio
 import adafruit_ssd1306
 from PIL import Image, ImageDraw, ImageFont
 from config import *
+from digitalio import DigitalInOut, Direction, Pull
 
 # Set up the OLED Bonnet
 reset_pin = digitalio.DigitalInOut(board.D4)
