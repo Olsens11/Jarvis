@@ -103,15 +103,15 @@ while True:
     )
 
     # Draw three horizontal lines inside the square
-    for line_y in range(2, square_height - 2, 4):
+    for line_y in range(3, square_height - 2, 4):
         draw.line(
             [(2, line_y), (square_width - 2, line_y)],
             fill=1 if selected_index == 0 else 0,
         )
 
     # Draw the vertical rectangle to the left of the filenames
-    vert_rect_x = square_width
-    vert_rect_y = 0
+    vert_rect_x = vert_rect_width
+    vert_rect_y = vert_rect_height
     draw.rectangle(
         (vert_rect_x, vert_rect_y, vert_rect_x + vert_rect_width, vert_rect_y + vert_rect_height),
         outline=1 if selected_index == 0 else 0,
