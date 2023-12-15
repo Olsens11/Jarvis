@@ -38,7 +38,7 @@ text_alignment = "left"  # Text alignment ("left", "center", "right")
 square_line_color = 1  # Color for lines in the square (1 for white, 0 for black)
 square_line_color_selected = 0
 square_line_color_unselected = 1
-square_line_spacing
+square_line_spacing = 2
 
 square_outline_color_selected = 0
 square_outline_color_unselected = 1
