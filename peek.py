@@ -56,10 +56,10 @@ filename_rect_height = 12
 max_filename_length = 15  # Maximum characters to display in filename rectangle
 
 square_width = 12
-square_height = 12
+square_height = rect_height  # Make the square the same height as the rectangles
 
-vert_rect_width = 12
-vert_rect_height = 50
+vert_rect_width = 4
+vert_rect_height = rect_height
 
 # Initialize selected_index and current_directory
 selected_index = 0
