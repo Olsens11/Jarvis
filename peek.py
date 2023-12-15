@@ -91,7 +91,7 @@ while True:
         # Example: Move down to the next file if the Down button is pressed
         selected_index += 1
 
-   # Rectangles and square configuration
+    # Rectangles and square configuration
     rect_width = 38
     rect_height = 12
     rect_margin_x = 1
@@ -107,9 +107,14 @@ while True:
     # Draw three horizontally centered lines inside the square
     line_x_start = 2
     line_x_end = square_width - 2
-    draw.line([(line_x_start, 4), (line_x_end, 4)], fill=1 if selected_index == 0 else 0)
-    draw.line([(line_x_start, 8), (line_x_end, 8)], fill=1 if selected_index == 0 else 0)
-    draw.line([(line_x_start, 12), (line_x_end, 12)], fill=1 if selected_index == 0 else 0)
+    draw.rectangle(
+        [(rect_margin_x, rect_margin_y), (rect_margin_x + square_width, rect_margin_y + square_height)],
+        outline=1 if selected_index == 0 else 0,
+        fill=1 if selected_index == 0 else 0,
+    )
+    draw.line([(line_x_start, 4), (line_x_end, 4)], fill=0 if selected_index == 0 else 1)
+    draw.line([(line_x_start, 8), (line_x_end, 8)], fill=0 if selected_index == 0 else 1)
+    draw.line([(line_x_start, 12), (line_x_end, 12)], fill=0 if selected_index == 0 else 1)
 
     # Draw a vertical rectangle to the left of the filenames
     vertical_rect_width = 2
@@ -118,8 +123,8 @@ while True:
         [(rect_margin_x, rect_margin_y), (rect_margin_x + vertical_rect_width, vertical_rect_height)],
         outline=1 if selected_index == 1 else 0,
         fill=1 if selected_index == 1 else 0,
+    )
 )
-
     # Draw rectangles and text at the top
     words = ["Back", "Faves", "Setup"]
     word_widths = [5, 5, 5]  # Estimated widths, replace with actual values
