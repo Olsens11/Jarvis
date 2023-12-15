@@ -19,6 +19,29 @@ draw = ImageDraw.Draw(image)
 # Load a font
 font = ImageFont.load_default()
 
+
+# Initialize buttons
+button_A = digitalio.DigitalInOut(board.D5)
+button_A.switch_to_input(pull=digitalio.Pull.UP)
+
+button_B = digitalio.DigitalInOut(board.D6)
+button_B.switch_to_input(pull=digitalio.Pull.UP)
+
+button_L = digitalio.DigitalInOut(board.D27)
+button_L.switch_to_input(pull=digitalio.Pull.UP)
+
+button_R = digitalio.DigitalInOut(board.D23)
+button_R.switch_to_input(pull=digitalio.Pull.UP)
+
+button_U = digitalio.DigitalInOut(board.D17)
+button_U.switch_to_input(pull=digitalio.Pull.UP)
+
+button_D = digitalio.DigitalInOut(board.D22)
+button_D.switch_to_input(pull=digitalio.Pull.UP)
+
+button_C = digitalio.DigitalInOut(board.D4)
+button_C.switch_to_input(pull=digitalio.Pull.UP)
+
 while True:
     # Read button states
     button_A_state = not button_A.value
@@ -44,28 +67,6 @@ while True:
     
     # Clear the image and draw the UI based on the updated selected_index
     draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
-
-# Initialize buttons
-button_A = digitalio.DigitalInOut(board.D5)
-button_A.switch_to_input(pull=digitalio.Pull.UP)
-
-button_B = digitalio.DigitalInOut(board.D6)
-button_B.switch_to_input(pull=digitalio.Pull.UP)
-
-button_L = digitalio.DigitalInOut(board.D27)
-button_L.switch_to_input(pull=digitalio.Pull.UP)
-
-button_R = digitalio.DigitalInOut(board.D23)
-button_R.switch_to_input(pull=digitalio.Pull.UP)
-
-button_U = digitalio.DigitalInOut(board.D17)
-button_U.switch_to_input(pull=digitalio.Pull.UP)
-
-button_D = digitalio.DigitalInOut(board.D22)
-button_D.switch_to_input(pull=digitalio.Pull.UP)
-
-button_C = digitalio.DigitalInOut(board.D4)
-button_C.switch_to_input(pull=digitalio.Pull.UP)
 
 # Configurations Section
 # Draw the square to the left of the rectangles
