@@ -3,6 +3,7 @@ import board
 import digitalio
 import adafruit_ssd1306
 from PIL import Image, ImageDraw, ImageFont
+from config import *
 
 # Set up the OLED Bonnet
 reset_pin = digitalio.DigitalInOut(board.D4)
@@ -44,22 +45,6 @@ button_D.pull = digitalio.Pull.UP
 button_C = digitalio.DigitalInOut(board.D4)
 button_C.direction = digitalio.Direction.INPUT
 button_C.pull = digitalio.Pull.UP
-
-# Rectangles and square configuration
-rect_width = 38
-rect_height = 12
-rect_margin_x = 1
-rect_margin_y = 1
-
-filename_rect_width = 124
-filename_rect_height = 12
-max_filename_length = 15  # Maximum characters to display in filename rectangle
-
-square_width = 12
-square_height = rect_height  # Make the square the same height as the rectangles
-
-vert_rect_width = 4
-vert_rect_height = rect_height
 
 # Initialize selected_index and current_directory
 selected_index = 0
