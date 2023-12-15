@@ -92,7 +92,7 @@ while True:
         selected_index += 1
 
     # Rectangles and square configuration
-    rect_width = 37               # Width of the top three rectangles
+    rect_width = 38               # Width of the top three rectangles
     rect_height = 12              # Height of the top three rectangles
     rect_margin_x = 1             # Horizontal margin between rectangles
     rect_margin_y = 1             # Vertical margin between rectangles
@@ -101,11 +101,13 @@ while True:
     filename_rect_height = 12     # Height of the filename rectangles
     max_filename_length = 15      # Maximum characters to display in filename rectangle
 
-    square_width = rect_height    # Width of the square
+    square_width = 12             # Width of the square
     square_height = rect_height   # Height of the square, same as the top three rectangles
 
-    vertical_rect_width = 12       # Width of the vertical rectangle
+    vertical_rect_width = 2       # Width of the vertical rectangle
     vertical_rect_height = (filename_rect_height + rect_margin_y) * 4  # Height of the vertical rectangle
+
+    selected_index = 0  # Example: Set the selected index
 
     # Draw three horizontally centered lines inside the square
     line_x_start = 2
@@ -125,28 +127,6 @@ while True:
         outline=1 if selected_index == 1 else 0,
         fill=1 if selected_index == 1 else 0,
     )
-
-    # Draw rectangles and text at the top
-    words = ["Root", "Faves", "Setup"]
-    word_widths = [3, 5, 5]  # Estimated widths, replace with actual values
-
-    for i in range(3):
-        x = square_width + i * (rect_width + rect_margin_x)
-        y = 0
-
-        # Check if the rectangle is selected
-        is_selected = i + 1 == selected_index
-
-        # Calculate the starting position to center the word within the rectangle
-        text_x = x + (rect_width - word_widths[i]) // 2 - 12
-        text_y = y + rect_margin_y - 1
-
-        # Draw the rectangle
-        draw.rectangle(
-            (x, y, x + rect_width, y + rect_height),
-            outline=1 if not is_selected else 0,
-            fill=1 if is_selected else 0,
-        )
 
         # Draw the text
         draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
