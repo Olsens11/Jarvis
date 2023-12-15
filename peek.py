@@ -138,7 +138,7 @@ while True:
         is_selected = i + 1 == selected_index
 
         # Calculate the starting position to center the word within the rectangle
-        text_x = x + (rect_width - word_widths[i]) // 2
+        text_x = x + (rect_width - word_widths[i]) // 2 - 12
         text_y = y + rect_margin_y - 1
 
         # Draw the rectangle
