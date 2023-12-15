@@ -18,52 +18,51 @@ font = ImageFont.load_default()
 
 # Initialize buttons
 button_A = digitalio.DigitalInOut(board.D5)
-button_A.switch_to_input(pull=digitalio.Pull.UP)
+button_A.direction = digitalio.Direction.INPUT
+button_A.pull = digitalio.Pull.UP
 
 button_B = digitalio.DigitalInOut(board.D6)
-button_B.switch_to_input(pull=digitalio.Pull.UP)
+button_B.direction = digitalio.Direction.INPUT
+button_B.pull = digitalio.Pull.UP
 
 button_L = digitalio.DigitalInOut(board.D27)
-button_L.switch_to_input(pull=digitalio.Pull.UP)
+button_L.direction = digitalio.Direction.INPUT
+button_L.pull = digitalio.Pull.UP
 
 button_R = digitalio.DigitalInOut(board.D23)
-button_R.switch_to_input(pull=digitalio.Pull.UP)
+button_R.direction = digitalio.Direction.INPUT
+button_R.pull = digitalio.Pull.UP
 
 button_U = digitalio.DigitalInOut(board.D17)
-button_U.switch_to_input(pull=digitalio.Pull.UP)
+button_U.direction = digitalio.Direction.INPUT
+button_U.pull = digitalio.Pull.UP
 
 button_D = digitalio.DigitalInOut(board.D22)
-button_D.switch_to_input(pull=digitalio.Pull.UP)
+button_D.direction = digitalio.Direction.INPUT
+button_D.pull = digitalio.Pull.UP
 
 button_C = digitalio.DigitalInOut(board.D4)
-button_C.switch_to_input(pull=digitalio.Pull.UP)
+button_C.direction = digitalio.Direction.INPUT
+button_C.pull = digitalio.Pull.UP
 
-# Rectangles configuration
-rect_width = 40
+# Rectangles and square configuration
+rect_width = 38
 rect_height = 12
 rect_margin_x = 1
 rect_margin_y = 1
 
-# Filename rectangles configuration
-filename_rect_width = 122
+filename_rect_width = 124
 filename_rect_height = 12
-filename_margin_y = 1
+max_filename_length = 15  # Maximum characters to display in filename rectangle
 
-# Initial selected rectangle index
+square_width = 12
+square_height = rect_height  # Make the square the same height as the rectangles
+
+vert_rect_width = 4
+vert_rect_height = rect_height
+
+# Initialize selected_index
 selected_index = 0
-
-# Previous selected index
-prev_selected_index = 0
-
-# Current directory path
-current_path = "/"
-
-# Words and their estimated widths
-words = ["Back", "Faves", "Setup"]
-word_widths = [24, 30, 30]
-
-def get_displayed_files(directory):
-    return os.listdir(directory)
 
 # Main loop
 while True:
@@ -79,64 +78,48 @@ while True:
     button_D_state = not button_D.value
     button_C_state = not button_C.value
 
-    # Update selected index based on directional buttons
-    if button_U_state:
-        if selected_index == 2 or selected_index > 2:
-            selected_index = (selected_index - 1) % (3 + len(os.listdir(current_path)))
-        while not button_U.value:  # Wait until button is released
-            pass
-    elif button_D_state:
-        if selected_index > 2:
-            selected_index = (selected_index + 1) % (3 + len(os.listdir(current_path)))
-        while not button_D.value:  # Wait until button is released
-            pass
-    elif button_L_state:
-        if selected_index == 0:  # Back rectangle selected
-            selected_index = 1  # Move to Faves
-        elif selected_index == 1:  # Faves rectangle selected
-            selected_index = 0  # Move to Back
-        elif selected_index == 2:  # Setup rectangle selected
-            selected_index = 1  # Move to Faves
-        while not button_L.value:  # Wait until button is released
-            pass
-    elif button_R_state:
-        if selected_index == 0:  # Back rectangle selected
-            selected_index = 2  # Move to Setup
-        elif selected_index == 1:  # Faves rectangle selected
-            selected_index = 2  # Move to Setup
-        elif selected_index == 2:  # Setup rectangle selected
-            selected_index = 0  # Move to Back
-        while not button_R.value:  # Wait until button is released
-            pass
+    # Example: Set selected_index based on button presses
+    if button_A_state:
+        selected_index = 0
+    elif button_B_state:
+        selected_index = 1
+    elif button_U_state:
+        # Example: Move up to the previous file if the Up button is pressed
+        selected_index -= 1
 
-    # Handle center button press
-    if button_C_state:
-        if selected_index == 0 or selected_index == 1:  # Back or Faves rectangle selected
-            current_path = os.path.dirname(current_path)
-            prev_selected_index = selected_index
-            selected_index = 3  # Select the uppermost filename
-            while not button_C.value:  # Wait until button is released
-                pass
-        elif selected_index > 2:  # Filename rectangle selected
-            selected_file = os.listdir(current_path)[len(os.listdir(current_path)) - selected_index + 2]
-            selected_path = os.path.join(current_path, selected_file)
-            if os.path.isdir(selected_path):
-                current_path = selected_path
-                prev_selected_index = selected_index
-                selected_index = 3  # Select the uppermost filename
-                while not button_C.value:  # Wait until button is released
-                    pass
+    # Draw the square to the left of the rectangles
+    square_outline_color = 1 if selected_index == 0 else 0
+    square_fill_color = 0 if selected_index == 0 else 1
 
-    # Handle B button press (acts as Back button)
-    if button_B_state:
-        current_path = os.path.dirname(current_path)
-        selected_index = prev_selected_index
-        while not button_B.value:  # Wait until button is released
-            pass
+    # Draw the outline of the square
+    draw.rectangle(
+        (0, rect_margin_y, square_width, rect_margin_y + square_height),
+        outline=square_outline_color,
+        fill=square_fill_color,
+    )
+
+    # Draw three horizontal lines inside the square
+    for line_y in range(rect_margin_y + 2, rect_margin_y + square_height - 2, 4):
+        draw.line(
+            [(2, line_y), (square_width - 2, line_y)],
+            fill=1 if selected_index == 0 else 0,
+        )
+
+    # Draw the vertical rectangle to the left of the filenames
+    vert_rect_x = square_width
+    vert_rect_y = rect_margin_y
+    draw.rectangle(
+        (vert_rect_x, vert_rect_y, vert_rect_x + vert_rect_width, vert_rect_y + vert_rect_height),
+        outline=1 if selected_index == 0 else 0,
+        fill=1 if selected_index == 0 else 0,
+    )
 
     # Draw rectangles and text at the top
+    words = ["Back", "Faves", "Setup"]
+    word_widths = [font.getsize(word)[0] for word in words]
+
     for i in range(3):
-        x = i * (rect_width + rect_margin_x)
+        x = square_width + i * (rect_width + rect_margin_x)
         y = rect_margin_y
 
         # Check if the rectangle is selected
@@ -157,26 +140,26 @@ while True:
         draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
 
     # Display file names in the current directory below the rectangles
-    displayed_files = get_displayed_files(current_path)
+    displayed_files = ["File1.txt", "File2.txt", "File3.txt"]  # Replace with actual file names
     for i, file_name in enumerate(reversed(displayed_files)):
         file_y = rect_margin_y + (i + 1) * (filename_rect_height + rect_margin_y)
 
-        # Check if the file rectangle is selected
-        is_file_selected = selected_index == 3 + len(displayed_files) - 1 - i
+        # Check if the filename rectangle is selected
+        is_selected = i + 3 == selected_index
 
-        # Draw the file rectangle
+        # Draw the filename rectangle
         draw.rectangle(
-            (0, file_y, filename_rect_width, file_y + filename_rect_height),
-            outline=1 if not is_file_selected else 0,
-            fill=1 if is_file_selected else 0,
+            (square_width, file_y, square_width + filename_rect_width, file_y + filename_rect_height),
+            outline=1 if not is_selected else 0,
+            fill=1 if is_selected else 0,
         )
 
-        # Draw the file text
+        # Draw the filename text
         draw.text(
-            (rect_margin_x, file_y + filename_margin_y - 1),
-            file_name,
+            (square_width + 1, file_y + 1),
+            file_name if len(file_name) <= max_filename_length else file_name[:max_filename_length - 3] + "...",
             font=font,
-            fill=0 if is_file_selected else 1,
+            fill=0 if is_selected else 1,
         )
 
     # Rotate the image 180 degrees before displaying
