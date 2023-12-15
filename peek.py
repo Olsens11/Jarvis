@@ -1,3 +1,5 @@
+# main_script.py
+
 import os
 import board
 import digitalio
@@ -19,114 +21,74 @@ font = ImageFont.load_default()
 
 # Initialize buttons
 button_A = digitalio.DigitalInOut(board.D5)
-button_A.direction = digitalio.Direction.INPUT
-button_A.pull = digitalio.Pull.UP
+button_A.switch_to_input(pull=digitalio.Pull.UP)
 
 button_B = digitalio.DigitalInOut(board.D6)
-button_B.direction = digitalio.Direction.INPUT
-button_B.pull = digitalio.Pull.UP
+button_B.switch_to_input(pull=digitalio.Pull.UP)
 
 button_L = digitalio.DigitalInOut(board.D27)
-button_L.direction = digitalio.Direction.INPUT
-button_L.pull = digitalio.Pull.UP
+button_L.switch_to_input(pull=digitalio.Pull.UP)
 
 button_R = digitalio.DigitalInOut(board.D23)
-button_R.direction = digitalio.Direction.INPUT
-button_R.pull = digitalio.Pull.UP
+button_R.switch_to_input(pull=digitalio.Pull.UP)
 
 button_U = digitalio.DigitalInOut(board.D17)
-button_U.direction = digitalio.Direction.INPUT
-button_U.pull = digitalio.Pull.UP
+button_U.switch_to_input(pull=digitalio.Pull.UP)
 
 button_D = digitalio.DigitalInOut(board.D22)
-button_D.direction = digitalio.Direction.INPUT
-button_D.pull = digitalio.Pull.UP
+button_D.switch_to_input(pull=digitalio.Pull.UP)
 
 button_C = digitalio.DigitalInOut(board.D4)
-button_C.direction = digitalio.Direction.INPUT
-button_C.pull = digitalio.Pull.UP
+button_C.switch_to_input(pull=digitalio.Pull.UP)
 
-# Initialize selected_index and current_directory
-selected_index = 0
-current_directory = "/"
+# Draw the square to the left of the rectangles
+square_outline_color = square_outline_color_selected if selected_index == 0 else square_outline_color_unselected
+square_fill_color = square_fill_color_selected if selected_index == 0 else square_fill_color_unselected
 
-# Main loop
-while True:
-    # Clear the image
-    draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
+# Draw the outline of the square
+draw.rectangle(
+    (0, rect_margin_y, square_width, rect_margin_y + square_height),
+    outline=square_outline_color,
+    fill=square_fill_color,
+)
 
-    # Read button states
-    button_A_state = not button_A.value
-    button_B_state = not button_B.value
-    button_L_state = not button_L.value
-    button_R_state = not button_R.value
-    button_U_state = not button_U.value
-    button_D_state = not button_D.value
-    button_C_state = not button_C.value
-
-    # Example: Set selected_index based on button presses
-    if button_A_state:
-        selected_index = 0
-    elif button_B_state:
-        selected_index = 1
-    elif button_U_state:
-        # Example: Move up to the previous file if the Up button is pressed
-        selected_index -= 1
-    elif button_D_state:
-        # Example: Move down to the next file if the Down button is pressed
-        selected_index += 1
-
-    # Draw the square to the left of the rectangles
-    square_outline_color = 1 if selected_index == 0 else 0
-    square_fill_color = 0 if selected_index == 0 else 1
-
-    # Draw the outline of the square
-    draw.rectangle(
-        (0, rect_margin_y, square_width, rect_margin_y + square_height),
-        outline=square_outline_color,
-        fill=square_fill_color,
+# Draw three horizontal lines inside the square
+for line_y in range(rect_margin_y + 2, rect_margin_y + square_height - 2, square_line_spacing):
+    draw.line(
+        [(2, line_y), (square_width - 2, line_y)],
+        fill=square_line_color_selected if selected_index == 0 else square_line_color_unselected,
     )
 
-    # Draw three horizontal lines inside the square
-    for line_y in range(rect_margin_y + 2, rect_margin_y + square_height - 2, 4):
-        draw.line(
-            [(2, line_y), (square_width - 2, line_y)],
-            fill=1 if selected_index == 0 else 0,
-        )
+# Draw the vertical rectangle to the left of the filenames
+vert_rect_x = square_width
+vert_rect_y = rect_margin_y
+draw.rectangle(
+    (vert_rect_x, vert_rect_y, vert_rect_x + vert_rect_width, vert_rect_y + vert_rect_height),
+    outline=vert_rect_outline_color_selected if selected_index == 0 else vert_rect_outline_color_unselected,
+    fill=vert_rect_fill_color_selected if selected_index == 0 else vert_rect_fill_color_unselected,
+)
 
-    # Draw the vertical rectangle to the left of the filenames
-    vert_rect_x = square_width
-    vert_rect_y = rect_margin_y
+# Draw rectangles and text at the top
+for i, word in enumerate(top_words):
+    x = square_width + i * (rect_width + rect_margin_x)
+    y = rect_margin_y
+
+    # Check if the rectangle is selected
+    is_selected = i == selected_index
+
+    # Calculate the starting position to center the word within the rectangle
+    text_x = x + (rect_width - top_word_widths[i]) // 2
+    text_y = y + rect_margin_y - 1
+
+    # Draw the rectangle
     draw.rectangle(
-        (vert_rect_x, vert_rect_y, vert_rect_x + vert_rect_width, vert_rect_y + vert_rect_height),
-        outline=1 if selected_index == 0 else 0,
-        fill=1 if selected_index == 0 else 0,
+        (x, y, x + rect_width, y + rect_height),
+        outline=rect_outline_color_selected if not is_selected else rect_outline_color_unselected,
+        fill=rect_fill_color_selected if is_selected else rect_fill_color_unselected,
     )
 
-    # Draw rectangles and text at the top
-    words = ["Back", "Faves", "Setup"]
-    word_widths = [5, 5, 5]  # Estimated widths, replace with actual values
-
-    for i in range(3):
-        x = square_width + i * (rect_width + rect_margin_x)
-        y = rect_margin_y
-
-        # Check if the rectangle is selected
-        is_selected = i == selected_index
-
-        # Calculate the starting position to center the word within the rectangle
-        text_x = x + (rect_width - word_widths[i]) // 2
-        text_y = y + rect_margin_y - 1
-
-        # Draw the rectangle
-        draw.rectangle(
-            (x, y, x + rect_width, y + rect_height),
-            outline=1 if not is_selected else 0,
-            fill=1 if is_selected else 0,
-        )
-
-        # Draw the text
-        draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
+    # Draw the text
+    draw.text((text_x, text_y), word, font=font, fill=text_color_selected if is_selected else text_color_unselected)
 
 # Display file names in the current directory below the rectangles
 displayed_files = os.listdir(current_directory)
@@ -139,8 +101,8 @@ for i, file_name in enumerate(reversed(displayed_files)):
     # Draw the filename rectangle
     draw.rectangle(
         (square_width, file_y, square_width + filename_rect_width, file_y + filename_rect_height),
-        outline=outline_color if not is_selected else 0,
-        fill=fill_color_selected if is_selected else fill_color_unselected,
+        outline=rect_outline_color_selected if not is_selected else rect_outline_color_unselected,
+        fill=rect_fill_color_selected if is_selected else rect_fill_color_unselected,
     )
 
     # Determine text position based on alignment
@@ -161,9 +123,6 @@ for i, file_name in enumerate(reversed(displayed_files)):
         fill=text_color_selected if is_selected else text_color_unselected,
     )
 
-    # Rotate the image 180 degrees before displaying
-    rotated_image = image.rotate(180)
-
-    # Display the rotated image on the OLED
-    oled.image(rotated_image)
-    oled.show()
+# Display the image on the OLED
+oled.image(image)
+oled.show()
