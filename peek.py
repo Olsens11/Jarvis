@@ -61,6 +61,9 @@ square_height = rect_height  # Make the square the same height as the rectangles
 vert_rect_width = 4
 vert_rect_height = rect_height
 
+# Initialize selected_index
+selected_index = 0
+
 # Main loop
 while True:
     # Clear the image
@@ -75,14 +78,14 @@ while True:
     button_D_state = not button_D.value
     button_C_state = not button_C.value
 
-    # Update selected index based on directional buttons
-    # ...
-
-    # Handle center button press
-    # ...
-
-    # Handle B button press (acts as Back button)
-    # ...
+    # Example: Set selected_index based on button presses
+    if button_A_state:
+        selected_index = 0
+    elif button_B_state:
+        selected_index = 1
+    elif button_U_state:
+        # Example: Move up to the previous file if the Up button is pressed
+        selected_index -= 1
 
     # Draw the square to the left of the rectangles
     square_outline_color = 1 if selected_index == 0 else 0
@@ -137,6 +140,7 @@ while True:
         draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
 
     # Display file names in the current directory below the rectangles
+    displayed_files = ["File1.txt", "File2.txt", "File3.txt"]  # Replace with actual file names
     for i, file_name in enumerate(reversed(displayed_files)):
         file_y = rect_margin_y + (i + 1) * (filename_rect_height + rect_margin_y)
 
