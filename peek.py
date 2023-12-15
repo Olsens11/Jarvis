@@ -91,25 +91,26 @@ while True:
         # Example: Move down to the next file if the Down button is pressed
         selected_index += 1
 
-    # Draw the square at the top-left
-    square_outline_color = 1 if selected_index == 0 else 0
-    square_fill_color = 0 if selected_index == 0 else 1
+    # Rectangles and square configuration
+    rect_width = 38
+    rect_height = 12
+    rect_margin_x = 1
+    rect_margin_y = 1
 
-    # Draw the outline of the square
-    draw.rectangle(
-        (0, 0, square_width, square_height),
-        outline=square_outline_color,
-        fill=square_fill_color,
-    )
+    filename_rect_width = 124
+    filename_rect_height = 12
+    max_filename_length = 15  # Maximum characters to display in filename rectangle
 
-    # Calculate the x-coordinates for the horizontal lines
-        line_x_start = 2
-        line_x_end = square_width - 2
+    square_width = 12
+    square_height = rect_height  # Make the square the same height as the rectangles
 
     # Draw three horizontally centered lines inside the square
-        draw.line([(line_x_start, 4), (line_x_end, 4)], fill=1 if selected_index == 0 else 0)
-        draw.line([(line_x_start, 8), (line_x_end, 8)], fill=1 if selected_index == 0 else 0)
-        draw.line([(line_x_start, 12), (line_x_end, 12)], fill=1 if selected_index == 0 else 0)
+    line_x_start = 2
+    line_x_end = square_width - 2
+    draw.line([(line_x_start, 4), (line_x_end, 4)], fill=1 if selected_index == 0 else 0)
+    draw.line([(line_x_start, 8), (line_x_end, 8)], fill=1 if selected_index == 0 else 0)
+    draw.line([(line_x_start, 12), (line_x_end, 12)], fill=1 if selected_index == 0 else 0)
+
 
 
     # Draw the vertical rectangle to the left of the filenames
