@@ -7,41 +7,6 @@ import adafruit_ssd1306
 from PIL import Image, ImageDraw, ImageFont
 from config import *
 
-# Set up the OLED Bonnet
-reset_pin = digitalio.DigitalInOut(board.D4)
-i2c = board.I2C()
-oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin)
-
-# Create an image with a black background
-image = Image.new("1", (oled.width, oled.height), 0)
-draw = ImageDraw.Draw(image)
-
-# Load a font
-font = ImageFont.load_default()
-
-# Initialize buttons
-button_A = digitalio.DigitalInOut(board.D5)
-button_A.switch_to_input(pull=digitalio.Pull.UP)
-
-button_B = digitalio.DigitalInOut(board.D6)
-button_B.switch_to_input(pull=digitalio.Pull.UP)
-
-button_L = digitalio.DigitalInOut(board.D27)
-button_L.switch_to_input(pull=digitalio.Pull.UP)
-
-button_R = digitalio.DigitalInOut(board.D23)
-button_R.switch_to_input(pull=digitalio.Pull.UP)
-
-button_U = digitalio.DigitalInOut(board.D17)
-button_U.switch_to_input(pull=digitalio.Pull.UP)
-
-button_D = digitalio.DigitalInOut(board.D22)
-button_D.switch_to_input(pull=digitalio.Pull.UP)
-
-button_C = digitalio.DigitalInOut(board.D4)
-button_C.switch_to_input(pull=digitalio.Pull.UP)
-
-# Add this section to handle button inputs
 while True:
     # Read button states
     button_A_state = not button_A.value
@@ -67,7 +32,42 @@ while True:
     
     # Clear the image and draw the UI based on the updated selected_index
     draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
+# Set up the OLED Bonnet
+reset_pin = digitalio.DigitalInOut(board.D4)
+i2c = board.I2C()
+oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, reset=reset_pin)
 
+# Create an image with a black background
+image = Image.new("1", (oled.width, oled.height), 0)
+draw = ImageDraw.Draw(image)
+
+# Load a font
+font = ImageFont.load_default()
+
+
+# Initialize buttons
+button_A = digitalio.DigitalInOut(board.D5)
+button_A.switch_to_input(pull=digitalio.Pull.UP)
+
+button_B = digitalio.DigitalInOut(board.D6)
+button_B.switch_to_input(pull=digitalio.Pull.UP)
+
+button_L = digitalio.DigitalInOut(board.D27)
+button_L.switch_to_input(pull=digitalio.Pull.UP)
+
+button_R = digitalio.DigitalInOut(board.D23)
+button_R.switch_to_input(pull=digitalio.Pull.UP)
+
+button_U = digitalio.DigitalInOut(board.D17)
+button_U.switch_to_input(pull=digitalio.Pull.UP)
+
+button_D = digitalio.DigitalInOut(board.D22)
+button_D.switch_to_input(pull=digitalio.Pull.UP)
+
+button_C = digitalio.DigitalInOut(board.D4)
+button_C.switch_to_input(pull=digitalio.Pull.UP)
+
+# Configurations Section
 # Draw the square to the left of the rectangles
 square_outline_color = square_outline_color_selected if selected_index == 0 else square_outline_color_unselected
 square_fill_color = square_fill_color_selected if selected_index == 0 else square_fill_color_unselected
@@ -116,6 +116,7 @@ for i, word in enumerate(top_words):
 
     # Draw the text
     draw.text((text_x, text_y), word, font=font, fill=text_color_selected if is_selected else text_color_unselected)
+
 
 # Display file names in the current directory below the rectangles
 displayed_files = os.listdir(current_directory)
