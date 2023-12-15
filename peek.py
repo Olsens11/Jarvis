@@ -124,7 +124,7 @@ while True:
         outline=1 if selected_index == 1 else 0,
         fill=1 if selected_index == 1 else 0,
     )
-)
+
     # Draw rectangles and text at the top
     words = ["Back", "Faves", "Setup"]
     word_widths = [5, 5, 5]  # Estimated widths, replace with actual values
