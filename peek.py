@@ -103,7 +103,7 @@ while True:
     )
 
     # Draw three horizontal lines inside the square
-    for line_y in range(3, square_height - 1, 3):
+    for line_y in range(2, square_height - 1, 3):
         draw.line(
             [(3, line_y), (square_width - 2, line_y)],
             fill=1 if selected_index == 0 else 0,
