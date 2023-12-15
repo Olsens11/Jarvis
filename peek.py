@@ -92,17 +92,20 @@ while True:
         selected_index += 1
 
     # Rectangles and square configuration
-    rect_width = 38
-    rect_height = 12
-    rect_margin_x = 1
-    rect_margin_y = 1
+    rect_width = 38               # Width of the top three rectangles
+    rect_height = 12              # Height of the top three rectangles
+    rect_margin_x = 1             # Horizontal margin between rectangles
+    rect_margin_y = 1             # Vertical margin between rectangles
 
-    filename_rect_width = 124
-    filename_rect_height = 12
-    max_filename_length = 15  # Maximum characters to display in filename rectangle
+    filename_rect_width = 124     # Width of the filename rectangles
+    filename_rect_height = 12     # Height of the filename rectangles
+    max_filename_length = 15      # Maximum characters to display in filename rectangle
 
-    square_width = 12
-    square_height = rect_height  # Make the square the same height as the rectangles
+    square_width = 12             # Width of the square
+    square_height = rect_height   # Height of the square, same as the top three rectangles
+
+    vertical_rect_width = 2       # Width of the vertical rectangle
+    vertical_rect_height = (filename_rect_height + rect_margin_y) * 4  # Height of the vertical rectangle
 
     # Draw three horizontally centered lines inside the square
     line_x_start = 2
@@ -117,8 +120,6 @@ while True:
     draw.line([(line_x_start, 12), (line_x_end, 12)], fill=0 if selected_index == 0 else 1)
 
     # Draw a vertical rectangle to the left of the filenames
-    vertical_rect_width = 2
-    vertical_rect_height = (filename_rect_height + rect_margin_y) * 4  # Same height as the square
     draw.rectangle(
         [(rect_margin_x, rect_margin_y), (rect_margin_x + vertical_rect_width, vertical_rect_height)],
         outline=1 if selected_index == 1 else 0,
