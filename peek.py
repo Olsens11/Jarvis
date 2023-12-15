@@ -51,9 +51,10 @@ max_filename_length = 15  # Maximum characters to display in filename rectangle
 square_width = 12
 square_height = rect_height  # Make the square the same height as the rectangles
 
-# Adjust the rectangle width and spacing
-rect_width -= square_width + rect_margin_x  # Reduce rectangle width by square width
-rect_margin_x = 1  # Maintain consistent spacing
+# New vertical rectangle configuration
+vert_rect_width = 12
+vert_rect_height = 12
+vert_rect_margin_x = 1
 
 # Initial selected rectangle index
 selected_index = 0
@@ -140,11 +141,11 @@ while True:
         while not button_B.value:  # Wait until button is released
             pass
 
-    # Draw the square to the left of the rectangles
-    square_x = 0
-    square_y = rect_margin_y
+    # Draw the vertical rectangle to the left of the filenames
+    vert_rect_x = square_width - vert_rect_width - vert_rect_margin_x
+    vert_rect_y = rect_margin_y
     draw.rectangle(
-        (square_x, square_y, square_x + square_width, square_y + square_height),
+        (vert_rect_x, vert_rect_y, vert_rect_x + vert_rect_width, vert_rect_y + vert_rect_height),
         outline=1 if selected_index == 0 else 0,
         fill=1 if selected_index == 0 else 0,
     )
