@@ -45,21 +45,21 @@ button_C = digitalio.DigitalInOut(board.D4)
 button_C.direction = digitalio.Direction.INPUT
 button_C.pull = digitalio.Pull.UP
 
-# UI Configuration
-rect_width = 40
+# Rectangles and square configuration
+rect_width = 38
 rect_height = 12
 rect_margin_x = 1
 rect_margin_y = 1
 
-square_width = 12
-square_height = 12  # Make the square the same height as the rectangles
-
-vert_rect_width = 12
-vert_rect_height = 50
-
-filename_rect_width = 110
+filename_rect_width = 124
 filename_rect_height = 12
 max_filename_length = 15  # Maximum characters to display in filename rectangle
+
+square_width = 12
+square_height = rect_height  # Make the square the same height as the rectangles
+
+vert_rect_width = 4
+vert_rect_height = rect_height
 
 # Initialize selected_index and current_directory
 selected_index = 0
@@ -91,53 +91,65 @@ while True:
         # Example: Move down to the next file if the Down button is pressed
         selected_index += 1
 
-    # Rectangles and square configuration
-    rect_width = 38               # Width of the top three rectangles
-    rect_height = 12              # Height of the top three rectangles
-    rect_margin_x = 1             # Horizontal margin between rectangles
-    rect_margin_y = 1             # Vertical margin between rectangles
+    # Draw the square to the left of the rectangles
+    square_outline_color = 1 if selected_index == 0 else 0
+    square_fill_color = 0 if selected_index == 0 else 1
 
-    filename_rect_width = 124     # Width of the filename rectangles
-    filename_rect_height = 12     # Height of the filename rectangles
-    max_filename_length = 15      # Maximum characters to display in filename rectangle
-
-    square_width = 12             # Width of the square
-    square_height = rect_height   # Height of the square, same as the top three rectangles
-
-    vertical_rect_width = 2       # Width of the vertical rectangle
-    vertical_rect_height = (filename_rect_height + rect_margin_y) * 4  # Height of the vertical rectangle
-
-    selected_index = 0  # Example: Set the selected index
-
-    # Draw three horizontally centered lines inside the square
-    line_x_start = 2
-    line_x_end = square_width - 2
+    # Draw the outline of the square
     draw.rectangle(
-        [(rect_margin_x, rect_margin_y), (rect_margin_x + square_width, rect_margin_y + square_height)],
+        (0, rect_margin_y, square_width, rect_margin_y + square_height),
+        outline=square_outline_color,
+        fill=square_fill_color,
+    )
+
+    # Draw three horizontal lines inside the square
+    for line_y in range(rect_margin_y + 2, rect_margin_y + square_height - 2, 4):
+        draw.line(
+            [(2, line_y), (square_width - 2, line_y)],
+            fill=1 if selected_index == 0 else 0,
+        )
+
+    # Draw the vertical rectangle to the left of the filenames
+    vert_rect_x = square_width
+    vert_rect_y = rect_margin_y
+    draw.rectangle(
+        (vert_rect_x, vert_rect_y, vert_rect_x + vert_rect_width, vert_rect_y + vert_rect_height),
         outline=1 if selected_index == 0 else 0,
         fill=1 if selected_index == 0 else 0,
     )
-    draw.line([(line_x_start, 4), (line_x_end, 4)], fill=0 if selected_index == 0 else 1)
-    draw.line([(line_x_start, 8), (line_x_end, 8)], fill=0 if selected_index == 0 else 1)
-    draw.line([(line_x_start, 12), (line_x_end, 12)], fill=0 if selected_index == 0 else 1)
 
-    # Draw a vertical rectangle to the left of the filenames
-    draw.rectangle(
-        [(rect_margin_x, rect_margin_y), (rect_margin_x + vertical_rect_width, vertical_rect_height)],
-        outline=1 if selected_index == 1 else 0,
-        fill=1 if selected_index == 1 else 0,
-    )
+    # Draw rectangles and text at the top
+    words = ["Back", "Faves", "Setup"]
+    word_widths = [5, 5, 5]  # Estimated widths, replace with actual values
+
+    for i in range(3):
+        x = square_width + i * (rect_width + rect_margin_x)
+        y = rect_margin_y
+
+        # Check if the rectangle is selected
+        is_selected = i == selected_index
+
+        # Calculate the starting position to center the word within the rectangle
+        text_x = x + (rect_width - word_widths[i]) // 2
+        text_y = y + rect_margin_y - 1
+
+        # Draw the rectangle
+        draw.rectangle(
+            (x, y, x + rect_width, y + rect_height),
+            outline=1 if not is_selected else 0,
+            fill=1 if is_selected else 0,
+        )
 
         # Draw the text
-    draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
+        draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
 
     # Display file names in the current directory below the rectangles
     displayed_files = os.listdir(current_directory)
     for i, file_name in enumerate(reversed(displayed_files)):
-        file_y = (i + 1) * (filename_rect_height + rect_margin_y)
+        file_y = rect_margin_y + (i + 1) * (filename_rect_height + rect_margin_y)
 
         # Check if the filename rectangle is selected
-        is_selected = i + 1 == selected_index
+        is_selected = i + 3 == selected_index
 
         # Draw the filename rectangle
         draw.rectangle(
