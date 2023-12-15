@@ -41,6 +41,33 @@ button_D.switch_to_input(pull=digitalio.Pull.UP)
 button_C = digitalio.DigitalInOut(board.D4)
 button_C.switch_to_input(pull=digitalio.Pull.UP)
 
+# Add this section to handle button inputs
+while True:
+    # Read button states
+    button_A_state = not button_A.value
+    button_B_state = not button_B.value
+    button_L_state = not button_L.value
+    button_R_state = not button_R.value
+    button_U_state = not button_U.value
+    button_D_state = not button_D.value
+    button_C_state = not button_C.value
+
+    # Determine button actions and update selected_index accordingly
+    if button_U_state:
+        selected_index -= 1
+    elif button_D_state:
+        selected_index += 1
+    elif button_L_state:
+        selected_index -= 1
+    elif button_R_state:
+        selected_index += 1
+
+    # Ensure selected_index stays within the valid range
+    selected_index = max(0, min(selected_index, max_index))
+    
+    # Clear the image and draw the UI based on the updated selected_index
+    draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
+
 # Draw the square to the left of the rectangles
 square_outline_color = square_outline_color_selected if selected_index == 0 else square_outline_color_unselected
 square_fill_color = square_fill_color_selected if selected_index == 0 else square_fill_color_unselected
