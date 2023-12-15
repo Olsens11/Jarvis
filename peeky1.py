@@ -49,6 +49,8 @@ button_C = DigitalInOut(board.D4)
 button_C.direction = Direction.INPUT
 button_C.pull = Pull.UP
 
+selected_index = 0  # Set the initial selected index to 0
+
 # Button Handling Section
 while True:
     # Read button states
