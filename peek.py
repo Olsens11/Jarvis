@@ -41,6 +41,8 @@ button_D.switch_to_input(pull=digitalio.Pull.UP)
 button_C = digitalio.DigitalInOut(board.D4)
 button_C.switch_to_input(pull=digitalio.Pull.UP)
 
+selected_index = 0
+
 # Draw the square to the left of the rectangles
 square_outline_color = square_outline_color_selected if selected_index == 0 else square_outline_color_unselected
 square_fill_color = square_fill_color_selected if selected_index == 0 else square_fill_color_unselected
