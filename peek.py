@@ -39,7 +39,7 @@ button_C = digitalio.DigitalInOut(board.D4)
 button_C.switch_to_input(pull=digitalio.Pull.UP)
 
 # Rectangles and square configuration
-rect_width = 42
+rect_width = 41
 rect_height = 12
 rect_margin_x = 1
 rect_margin_y = 1
