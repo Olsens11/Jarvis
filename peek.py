@@ -101,10 +101,10 @@ while True:
     filename_rect_height = 12     # Height of the filename rectangles
     max_filename_length = 15      # Maximum characters to display in filename rectangle
 
-    square_width = 12             # Width of the square
+    square_width = rect_height    # Width of the square
     square_height = rect_height   # Height of the square, same as the top three rectangles
 
-    vertical_rect_width = 2       # Width of the vertical rectangle
+    vertical_rect_width = 12       # Width of the vertical rectangle
     vertical_rect_height = (filename_rect_height + rect_margin_y) * 4  # Height of the vertical rectangle
 
     # Draw three horizontally centered lines inside the square
