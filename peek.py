@@ -92,7 +92,7 @@ while True:
         selected_index += 1
 
     # Rectangles and square configuration
-    rect_width = 38               # Width of the top three rectangles
+    rect_width = 37               # Width of the top three rectangles
     rect_height = 12              # Height of the top three rectangles
     rect_margin_x = 1             # Horizontal margin between rectangles
     rect_margin_y = 1             # Vertical margin between rectangles
