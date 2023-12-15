@@ -46,18 +46,18 @@ button_C.direction = digitalio.Direction.INPUT
 button_C.pull = digitalio.Pull.UP
 
 # UI Configuration
-rect_width = 30
+rect_width = 40
 rect_height = 12
 rect_margin_x = 1
 rect_margin_y = 1
 
-square_width = 30
-square_height = 30  # Make the square the same height as the rectangles
+square_width = 12
+square_height = 12  # Make the square the same height as the rectangles
 
-vert_rect_width = 4
-vert_rect_height = 30
+vert_rect_width = 12
+vert_rect_height = 50
 
-filename_rect_width = 90
+filename_rect_width = 110
 filename_rect_height = 12
 max_filename_length = 15  # Maximum characters to display in filename rectangle
 
