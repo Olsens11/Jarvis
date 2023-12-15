@@ -129,7 +129,7 @@ while True:
     )
 
         # Draw the text
-        draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
+    draw.text((text_x, text_y), words[i], font=font, fill=0 if is_selected else 1)
 
     # Display file names in the current directory below the rectangles
     displayed_files = os.listdir(current_directory)
